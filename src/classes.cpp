@@ -3,8 +3,22 @@
 #include <map>
 #include <iostream>
 
-int Player::getHp() const {
+int Entity::getHp() const {
     return hp;
+}
+
+void Entity::damage(int damageAmt) {
+    hp -= damageAmt;
+    if (hp < 0) {
+        hp = 0;
+    }
+}
+
+void Entity::heal(int healAmt) {
+    hp += healAmt;
+    if (hp > hpCap) {
+        hp = hpCap;
+    }
 }
 
 int Player::getEnergy() const {
@@ -12,38 +26,31 @@ int Player::getEnergy() const {
 }
 
 int Player::getHandSize() const {
-    return hand.size();
+    return static_cast<int>(hand.size());
 }
 
 int Player::getDeckSize() const {
-    return deck.size();
-}
-
-void Player::damage(int damageAmt) {
-    hp -= damageAmt;
-    if (hp < 0) {
-        hp = 0;
-    }
-}
-
-void Player::heal(int healAmt) {
-    hp += healAmt;
-    if (hp > hpCap) {
-        hp = hpCap;
-    }
+    return static_cast<int>(deck.size());
 }
 
 Player::~Player() {
-    for (auto& e : hand) {
-        delete e;
-    }
-    hand.clear();
     for (auto& e : deck) {
         delete e;
     }
     deck.clear();
+    for (auto& e : draw) {
+        delete e;
+    }
+    draw.clear();
+    for (auto& e : hand) {
+        delete e;
+    }
+    hand.clear();
+    for (auto& e : discard) {
+        delete e;
+    }
+    discard.clear();
 }
-
 
 
 void Party::addMember(Player* newPlayer) {
@@ -64,8 +71,14 @@ void Party::addMember(const std::string& newName, int newHp) {
     }
 }
 
-int Party::partyLegnth() {
-    return partyList.size();
+int Party::size() {
+    int resp{0}; 
+    for (auto e: partyList){
+        if (e != nullptr) {
+            resp++;
+        };
+    };
+    return resp;
 }
 
 Party::~Party() {
