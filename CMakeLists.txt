@@ -7,6 +7,16 @@ set(PROJECT_SOURCE_DIR "src")
 
 set(EXECUTABLE_OUTPUT_PATH ${THIS_HOME_DIR}/bin)
 
+if(WIN32) # Install dlls in the same directory as the executable on Windows
+    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+
+    include(FetchContent)
+    FetchContent_Declare(sqlite3 URL "https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip")
+    FetchContent_MakeAvailable(sqlite3)
+
+endif()
+
 find_package(SQLite3 REQUIRED)
 
 if(PROJECT_IS_TOP_LEVEL)
