@@ -201,3 +201,4 @@ cython_debug/
 #debugging files
 /*.json
 buildNinja
+buildUnix
