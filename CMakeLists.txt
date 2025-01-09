@@ -58,7 +58,7 @@ else()
 endif()
 
 if(WIN32)
-    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/)
+    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/cards.db)
 else()
     set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db)
 endif()
