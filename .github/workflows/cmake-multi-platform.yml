@@ -53,6 +53,14 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+      
+    - name: install sqlite3
+      if: 
+      uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: sqlite3
+        version: 4.0
+        # execute_install_scripts: true
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
