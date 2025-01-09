@@ -57,10 +57,16 @@ else()
     )
 endif()
 
+if(WIN32)
+    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/)
+else()
+    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db)
+endif()
+
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
                        ${THIS_HOME_DIR}/assets/cards.db
-                       ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db
+                       ${ASSET_DEST}
                    )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
