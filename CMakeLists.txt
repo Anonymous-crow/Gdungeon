@@ -57,7 +57,16 @@ else()
     )
 endif()
 
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                       ${THIS_HOME_DIR}/assets/cards.db
+                       ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db
+                   )
+
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION packbin)
+
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
+install(DIRECTORY assets/ DESTINATION assets/)
+
 include(CPack)
