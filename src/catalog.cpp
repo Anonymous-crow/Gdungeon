@@ -86,9 +86,14 @@ void Catalog::openDB() {
     //         throw std::runtime_error(errmsg);
     //     }
     // }
-    const char * filepathCStringBecauseWindowsIsAnOperatingSystem = filename.string().c_str();
+    #ifdef _WIN32
+    std::string FUCKWINDOWS = filename.string();
+    const char * filepathCStringBecauseWindowsIsAnOperatingSystem = FUCKWINDOWS.c_str();
     int rc = sqlite3_open(filepathCStringBecauseWindowsIsAnOperatingSystem, 
                           &db);
+    #else 
+    int rc = sqlite3_open(filename.c_str(), &db);
+    #endif
 
     if (rc)
     {

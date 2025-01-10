@@ -14,23 +14,31 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 if(WIN32)
 
-    include(ExternalProject)
-    ExternalProject_Add(
-        sqlite3
-        PREFIX ${CMAKE_BINARY_DIR}/sqlite3
+    # include(ExternalProject)
+    # ExternalProject_Add(
+    #     sqlite3
+    #     PREFIX ${CMAKE_BINARY_DIR}/sqlite3
+    #     URL "https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip"
+    #     CONFIGURE_COMMAND ""
+    #     BUILD_COMMAND "cl.exe ${CMAKE_BINARY_DIR}/sqlite3/src/sqlite3/sqlite3.c -DSQLITE_API=__declspec(dllexport) -link -dll -out:sqlite3.dll"
+    #     INSTALL_COMMAND ""
+    #     LOG_DOWNLOAD ON
+    #     DOWNLOAD_EXTRACT_TIMESTAMP true
+    # )
+    # ExternalProject_Get_Property(sqlite3 source_dir)
+    # set(SQLite3_INCLUDE_DIR ${source_dir})
+    # message(SQLite3_INCLUDE_DIR=${SQLite3_INCLUDE_DIR})
+    include(FetchContent)
+    FetchContent_Declare(SQLite
         URL "https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip"
-        CONFIGURE_COMMAND ""
-        BUILD_COMMAND ""
-        INSTALL_COMMAND ""
-        LOG_DOWNLOAD ON
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
-    ExternalProject_Get_Property(sqlite3 source_dir)
-    set(Sqlite3IncludeDir ${source_dir})
-    message(Sqlite3IncludeDir=${Sqlite3IncludeDir})
-
+    FetchContent_MakeAvailable(SQLite)
+    message(SQLite3_INCLUDE_DIR=${sqlite_SOURCE_DIR})
+    set(BUILDSQLITE "${sqlite_SOURCE_DIR}/sqlite3.c")
 else()
     find_package(SQLite3 REQUIRED)
+    set(BUILDSQLITE "")
 endif()
 
 
@@ -44,6 +52,7 @@ add_executable(${PROJECT_NAME}
     src/classes.cpp
     src/catalog.cpp
     src/cli.cpp
+    ${BUILDSQLITE}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
@@ -55,7 +64,8 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 if(WIN32)
-    target_include_directories(${PROJECT_NAME} PRIVATE ${Sqlite3IncludeDir})
+    # include_directories(PRIVATE ${Sqlite3IncludeDir})
+    target_include_directories(${PROJECT_NAME} PUBLIC "${sqlite_SOURCE_DIR}")
     set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/cards.db)
 else()
     target_link_libraries(${PROJECT_NAME} 
