@@ -93,7 +93,7 @@ void Catalog::openDB() {
     {
 
         char errmsg[] = "Can't open database: ";
-        strcat(errmsg, sqlite3_errmsg(db));
+        std::strcat(errmsg, sqlite3_errmsg(db));
         throw std::runtime_error(errmsg);
     }
 }

@@ -2,6 +2,7 @@
 #define CATALOG_H
 
 #include <string>
+#include <cstring>
 #include <bitset>
 #include <vector>
 #include <map>
@@ -33,16 +34,16 @@ struct Card {
                 tagline(argv[2]),
                 description(argv[3]),
                 position(argv[4]),
-                barrage(argv[5] == "1"),
-                team(argv[6] == "1"),
+                barrage(std::strcmp(argv[5], "1") == 0),
+                team(std::strcmp(argv[6], "1") == 0),
                 energyCost(std::stoi(argv[7])),
-                token(argv[8] == "1"),
+                token(std::strcmp(argv[8], "1") == 0),
                 tokenCost(std::stoi(argv[9])),
                 tokenType(argv[10]),
                 damage(std::stoi(argv[11])),
                 copies(std::stoi(argv[12])),
                 repeat(std::stoi(argv[13])),
-                exhaust(argv[14] == "1")
+                exhaust(std::strcmp(argv[14], "1") == 0)
                 {};
         
         Card(const char* newName,
