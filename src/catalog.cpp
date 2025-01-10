@@ -50,15 +50,17 @@ int callback(void *CatalogObj, int argc, char **argv, char **azColName){
 
 Card* Catalog::createCard(const std::string& cardID) {
     
-    char *errmsg = 0;
-    Card* newCard;
-    int rc = sqlite3_exec(db, 
-                sqlite3_mprintf(
+    char* errmsg = nullptr;
+    char* sqlQuery = sqlite3_mprintf(
                     "SELECT * FROM playerCards WHERE cardID = \"%q\";", 
-                    cardID.c_str()), 
-                    callback, 
-                    reinterpret_cast<void*>(this), 
-                    &errmsg);
+                    cardID.c_str());
+    int rc = sqlite3_exec(db, 
+                          sqlQuery,
+                          callback, 
+                          reinterpret_cast<void*>(this), 
+                          &errmsg);
+
+    sqlite3_free(sqlQuery);
 
     if( rc != SQLITE_OK ) {
         fprintf(stderr, "SQL error: %s\n", errmsg);
