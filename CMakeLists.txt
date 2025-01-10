@@ -7,6 +7,8 @@ set(EXECUTABLE_OUTPUT_PATH ${THIS_HOME_DIR}/bin)
 
 set(PROJECT_SOURCE_DIR "src")
 
+set(CMAKE_DEBUG_POSTFIX d)
+
 
 if(WIN32)
 
@@ -42,6 +44,7 @@ add_executable(${PROJECT_NAME}
     src/cli.cpp
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-${CMAKE_GENERATOR}-${CMAKE_C_COMPILER_ID}")
 
 target_compile_definitions(${PROJECT_NAME}
@@ -51,15 +54,11 @@ target_compile_definitions(${PROJECT_NAME}
 
 if(WIN32)
     target_include_directories(${PROJECT_NAME} PRIVATE ${Sqlite3IncludeDir})
+    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/cards.db)
 else()
     target_link_libraries(${PROJECT_NAME} 
         PRIVATE SQLite::SQLite3
     )
-endif()
-
-if(WIN32)
-    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/cards.db)
-else()
     set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db)
 endif()
 

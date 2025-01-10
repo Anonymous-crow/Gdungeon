@@ -35,22 +35,30 @@ class Entity {
 
 class Player: public Entity {
     public:
-        Player() :  energy{3}, 
+        Player(Catalog* newCardCatalogPtr) 
+                :   energy{3}, 
                     handsize{5},
+                    cardCatalogPtr(newCardCatalogPtr),
                     Entity()
                     {}
 
-        Player(int newHp, const std::string& newName) :
+        Player(int newHp, 
+               const std::string& newName, 
+               Catalog* newCardCatalogPtr) :
                             energy{3}, 
                             handsize{5},
+                            cardCatalogPtr(newCardCatalogPtr),
                             Entity(newHp, newName)
                             {}
 
         int getEnergy() const;
         int getHandSize() const;
         int getDeckSize() const;
+        std::string getDeckString() const;
         
-        int addCardToDeck(const Card&);
+        void addCardToDeck(Card*);
+        void addCardToDeck(const std::string&, int = 1);
+        void removeCardFromDeck(const std::string&);
 
         ~Player();
 
@@ -61,17 +69,23 @@ class Player: public Entity {
         std::vector<Card*> draw;
         std::vector<Card*> hand;
         std::vector<Card*> discard;
+        Catalog* cardCatalogPtr{nullptr};
 };
 
 
 class Party {
     public:
+        Party(Catalog* newCardCatalogPtr) 
+            :    cardCatalogPtr(newCardCatalogPtr) {};
         ~Party();
         void addMember(Player*);
-        void addMember(const std::string&, int);
+        void addMember(int, const std::string&);
         int size();
+        Player* operator[](int);
+        std::string print();
     private:
         std::array<Player*, 4> partyList{nullptr};
+        Catalog* cardCatalogPtr{nullptr};
 };
 
 
