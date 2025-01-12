@@ -9,6 +9,10 @@ std::string Entity::getName() const {
     return name;
 }
 
+std::string Entity::getID() const {
+    return id;
+}
+
 int Entity::getHp() const {
     return hp;
 }
@@ -43,11 +47,13 @@ std::string Player::getDeckString() const {
     std::ostringstream out;
     std::map<std::string, int> deckMap;
     for (Card* e : deck) {
-        deckMap[e->name]++;
+        ++deckMap[e->name];
     }
     bool first{false};
-    std::map<std::string, int>::const_iterator i;
-    for (i = deckMap.begin(); i != deckMap.end(); i++) {
+    for (std::map<std::string, int>::const_iterator 
+         i = deckMap.begin(); 
+         i != deckMap.end(); 
+         ++i) {
         out << "\t   ";
         if (!first) {
             out << "- ";
@@ -64,11 +70,19 @@ std::string Player::getDeckString() const {
     return out.str();
 }
 
+std::map<std::string, int> Player::getDeckContents() const {
+    std::map<std::string, int> deckMap;
+    for (Card* e : deck) {
+        ++deckMap[e->cardID];
+    }
+    return deckMap;
+}
+
 void Player::addCardToDeck(Card* newCard) {
     int found{0};
     for (Card* e : deck) {
         if (e == newCard) {
-            found++;
+            ++found;
         }
     }
     if (found == 0) {
@@ -83,25 +97,37 @@ void Player::addCardToDeck(const std::string& cardID, int copies) {
     Card* newCard = nullptr;
     for (Card* e : deck) {
         if (e->cardID == cardID) {
-            found++;
+            ++found;
             newCard = e;
         }
     }
     if (found == 0) {
         newCard = cardCatalogPtr->getCardByID(cardID);
-        for (int i{0}; i < newCard->copies && i < copies; i++) {
+        for (int i{0}; i < newCard->copies && i < copies; ++i) {
             deck.push_back(newCard);
         }
     } else if (newCard->copies > found) {
-        for (int i{0}; found < newCard->copies && i < copies; i++) {
+        for (int i{0}; 
+             found < newCard->copies && i < copies; 
+             ++i) {
             deck.push_back(newCard);
-            found++;
+            ++found;
         }
     }
 }
 
-void Player::removeCardFromDeck(const std::string&) {
-    
+void Player::removeCardFromDeck(const std::string& cardID, 
+                                int toRemove) {
+    int deleted{0};
+    std::list<Card*>::iterator i = deck.begin();
+    while(deleted < toRemove && i != deck.end()) {
+        if (cardID == (*i)->cardID) {
+            i = deck.erase(i);
+            ++deleted;
+        } else {
+            ++i;
+        }
+    }
 } 
 
 Player::~Player() {
@@ -132,7 +158,7 @@ Player* Party::operator[](int index) {
 
 
 void Party::addMember(Player* newPlayer) {
-    for (int i{0}; i < 4; i++) {
+    for (int i{0}; i < 4; ++i) {
         if (partyList[i] == nullptr) {
             partyList[i] = newPlayer;
             break;
@@ -140,10 +166,15 @@ void Party::addMember(Player* newPlayer) {
     }
 }
 
-void Party::addMember(int newHp, const std::string& newName) {
-    for (int i{0}; i < 4; i++) {
+void Party::addMember(int newHp, 
+                      const std::string& newName,
+                      const std::string& newID) {
+    for (int i{0}; i < 4; ++i) {
         if (partyList[i] == nullptr) {
-            partyList[i] = new Player(newHp, newName, cardCatalogPtr);
+            partyList[i] = new Player(newHp, 
+                                      newName, 
+                                      newID,
+                                      cardCatalogPtr);
             break;
         }
     }
@@ -151,9 +182,9 @@ void Party::addMember(int newHp, const std::string& newName) {
 
 int Party::size() {
     int resp{0}; 
-    for (int i{0}; i < 4; i++){
+    for (int i{0}; i < 4; ++i){
         if (partyList[i] != nullptr) {
-            resp++;
+            ++resp;
         };
     };
     return resp;
@@ -173,7 +204,7 @@ std::string Party::print() {
 }
 
 Party::~Party() {
-    for (int i{0}; i < 4; i++) {
+    for (int i{0}; i < 4; ++i) {
         delete partyList[i];
         partyList[i] = nullptr;
     }

@@ -204,3 +204,4 @@ buildNinja
 buildUnix
 *.csv
 debug
+windebug

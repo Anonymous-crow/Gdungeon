@@ -4,10 +4,14 @@
 #include <string>
 #include <cstring>
 #include <bitset>
-#include <vector>
+#include <list>
 #include <map>
 #include <sqlite3.h>
 
+#include <classes.hpp>
+
+class Player;
+class Party;
 
 enum EffectType {
     SHIELD,
@@ -61,7 +65,7 @@ struct Card {
              int newCopies,
              int newRepeat,
              bool newExhaust,
-             const std::vector<Effect>& newEffectList) 
+             const std::list<Effect>& newEffectList) 
              :  name(newName),
                 cardID(newID),
                 tagline(newTagline),
@@ -94,7 +98,7 @@ struct Card {
         int repeat{0};
         bool exhaust;
         std::string tokenType;
-        std::vector<Effect> EffectList;
+        std::list<Effect> EffectList;
 };
 
 struct EnemyCard {
@@ -111,16 +115,26 @@ struct Intention {
 class Catalog {
     public:
         Card* getCardByID(const std::string&);
+        int getCopiesByID(const std::string&);
+        void clearUnused(const Party*);
+        void clearUnused(const Player*);
         Catalog();
         ~Catalog();
     private:
         Card* searchForID(const std::string&) const;
+        int searchForCopies(const std::string&) const;
+        std::list<std::string> searchForPlayerCards
+                    (const std::string&) const;
+        std::list<std::string> searchForAllCards() const;
         Card* createCard(const std::string&);
         std::map<std::string, Card*> cardMap;
         void openDB();
         void closeDB();
         sqlite3* db;
-    friend int callback(void *, int, char **, char **);
+    friend int intCallBack(void *, int, char **, char **);
+    friend int cardCallback(void *, int, char **, char **);
+    template<typename T>
+    friend int listCallback(void *, int, char **, char **);
 };
 
 #endif
