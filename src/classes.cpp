@@ -103,8 +103,14 @@ void Player::addCardToDeck(const std::string& cardID, int copies) {
     }
     if (found == 0) {
         newCard = cardCatalogPtr->getCardByID(cardID);
-        for (int i{0}; i < newCard->copies && i < copies; ++i) {
-            deck.push_back(newCard);
+        if (newCard != nullptr) {
+            for (int i{0}; i < newCard->copies && i < copies; ++i) {
+                deck.push_back(newCard);
+            }
+        } else {
+            std::cerr << "Could not load card "
+            << cardID << "! Card not found."
+            << std::endl;
         }
     } else if (newCard->copies > found) {
         for (int i{0}; 

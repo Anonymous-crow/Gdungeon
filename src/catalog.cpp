@@ -56,12 +56,27 @@ int intCallBack(void *intPtr,
     return 0;
 }
 
-template<typename T>
-int listCallback(void *listPtr, 
+int stringListCallback(void *listPtr, 
              int argc, 
              char **argv, 
              char **azColName){
-    reinterpret_cast<std::list<T>*>(listPtr)->push_back(argv[0]);
+    reinterpret_cast<std::list<std::string>*>(listPtr)
+        ->push_back(argv[0]);
+    return 0;
+}
+
+int effectListCallback(void *listPtr, 
+             int argc, 
+             char **argv, 
+             char **azColName){
+    for (int i{1}; i < argc; ++i) {
+        int stack = std::stoi(argv[i]);
+        if (stack != 0) {
+            reinterpret_cast<std::list<Effect>*>(listPtr)
+                ->push_back(
+                    Effect(EffectType(i), stack));
+        }
+    }
     return 0;
 }
 
@@ -110,12 +125,33 @@ Card* Catalog::createCard(const std::string& cardID) {
 
     sqlite3_free(sqlQuery);
 
+    Card* resp = searchForID(cardID);
+
     if( rc != SQLITE_OK ) {
         fprintf(stderr, "SQL error: %s\n", errmsg);
         throw std::runtime_error(errmsg);
         sqlite3_free(errmsg);
     }
-    return searchForID(cardID);
+
+    sqlQuery = sqlite3_mprintf(
+                    "SELECT * FROM cardEffects WHERE cardID = \"%q\";", 
+                    cardID.c_str());
+
+    rc = sqlite3_exec(db, 
+                          sqlQuery,
+                          effectListCallback, 
+                          reinterpret_cast<void*>(&(resp->EffectList)), 
+                          &errmsg);
+
+    sqlite3_free(sqlQuery);
+
+    if( rc != SQLITE_OK ) {
+        fprintf(stderr, "SQL error: %s\n", errmsg);
+        throw std::runtime_error(errmsg);
+        sqlite3_free(errmsg);
+    }
+
+    return resp;
 }
 
 std::list<std::string> Catalog::searchForPlayerCards
@@ -127,7 +163,7 @@ std::list<std::string> Catalog::searchForPlayerCards
     std::list<std::string> cardList;
     int rc = sqlite3_exec(db, 
                           sqlQuery,
-                          listCallback<std::string>, 
+                          stringListCallback, 
                           reinterpret_cast<void*>(&cardList), 
                           &errmsg);
 
@@ -146,7 +182,7 @@ std::list<std::string> Catalog::searchForAllCards() const {
     std::list<std::string> cardList;
     int rc = sqlite3_exec(db, 
                           "SELECT cardID FROM playerCards;",
-                          listCallback<std::string>, 
+                          stringListCallback, 
                           reinterpret_cast<void*>(&cardList), 
                           &errmsg);
 

@@ -5,7 +5,6 @@
 #include <vector>
 #include <list>
 #include <random>
-#include <array>
 #include <iterator>
 #include <cstddef>
 
@@ -13,6 +12,7 @@
 
 class Catalog;
 struct Card;
+struct Effect;
 
 
 class Entity {
@@ -106,7 +106,7 @@ class Party {
                 iterator& operator++() {
                     ++m_ptr; 
                     return *this;
-                    }
+                }
                 iterator operator++(int) {
                     iterator tmp = *this; 
                     ++m_ptr;

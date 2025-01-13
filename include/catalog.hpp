@@ -14,11 +14,14 @@ class Player;
 class Party;
 
 enum EffectType {
-    SHIELD,
+    SHIELD=1,
     STRENGTH,
     FORTITUDE,
     GLINT,
+    MARK,
     IMMUNITY,
+    RESTORE,
+    CLEAR,
     TAUNT,
     WEAK,
     VULNERABLE,
@@ -26,6 +29,11 @@ enum EffectType {
 };
 
 struct Effect {
+    Effect(EffectType newType,
+           int newStack)
+            :   name(newType),
+                stack(newStack) {}
+        
     EffectType name;
     int stack;
 };
@@ -133,8 +141,14 @@ class Catalog {
         sqlite3* db;
     friend int intCallBack(void *, int, char **, char **);
     friend int cardCallback(void *, int, char **, char **);
-    template<typename T>
-    friend int listCallback(void *, int, char **, char **);
+    friend int stringListCallback(void *, 
+                                  int, 
+                                  char **, 
+                                  char **);
+    friend int effectListCallback(void *, 
+                                  int, 
+                                  char **, 
+                                  char **);
 };
 
 #endif

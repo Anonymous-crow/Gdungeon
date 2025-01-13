@@ -42,6 +42,25 @@ CREATE TABLE IF NOT EXISTS "playerCards" (
 )
 ''')
         self.data.execute("CREATE UNIQUE INDEX IF NOT EXISTS idsort ON \"playerCards\" (\"cardID\"	ASC)")
+        self.data.execute('''
+CREATE TABLE IF NOT EXISTS "cardEffects" (
+	"cardID"	TEXT NOT NULL UNIQUE,
+	"shield"	INTEGER,
+	"strength"	INTEGER,
+	"fortitude"	INTEGER,
+	"glint"	INTEGER,
+    "mark"	INTEGER,
+	"immunity"	INTEGER,
+    "restore"	INTEGER,
+    "clear"	INTEGER,
+	"taunt"	INTEGER,
+	"weak"	INTEGER,
+	"vulnerable"	INTEGER,
+	"stun"	INTEGER,
+	PRIMARY KEY("cardID"),
+	FOREIGN KEY("cardID") REFERENCES "playerCards"("cardID")
+)
+''')
 
     def read_csv(self, input_file : str) -> None:
         with open(input_file, "r") as f:
@@ -87,6 +106,44 @@ CREATE TABLE IF NOT EXISTS "playerCards" (
                                   "EXHAUST": i["exhaust"]
                               })
         self.con.commit()
+    
+    def import_effects(self, input_file : str) -> None:
+        csvdata = self.read_csv(input_file)
+        for i in csvdata:
+            for j in []:
+                i[j] = i[j] == "TRUE"
+            self.data.execute("""INSERT OR REPLACE INTO "cardEffects" values (
+                              :CARDID,
+                              :SHIELD,
+                              :STRENGTH,
+                              :FORTITUDE,
+                              :GLINT,
+                              :MARK,
+                              :IMMUNITY,
+                              :RESTORE,
+                              :CLEAR,
+                              :TAUNT,
+                              :WEAK,
+                              :VULNERABLE,
+                              :STUN
+                              )""",
+                              {
+                                  "CARDID": i["cardID"],
+                                  "SHIELD": i["shield"],
+                                  "STRENGTH": i["strength"],
+                                  "FORTITUDE": i["fortitude"],
+                                  "GLINT": i["glint"],
+                                  "MARK": i["mark"],
+                                  "IMMUNITY": i["immunity"],
+                                  "RESTORE": i["restore"],
+                                  "CLEAR": i["clear"],
+                                  "TAUNT": i["taunt"],
+                                  "WEAK": i["weak"],
+                                  "VULNERABLE": i["vulnerable"],
+                                  "STUN": i["stun"]
+                              })
+        self.con.commit()
+
 
     def __del__(self):
         self.con.close()
@@ -96,15 +153,21 @@ CREATE TABLE IF NOT EXISTS "playerCards" (
         
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.argument("input", default="Cards - Sheet1.csv")
+@click.argument("input", default="Cards - data.csv")
 @click.option('-o', '--output', default=None)
+@click.option('-e', '--effect-table', is_flag=True)
 def cli(ctx,
         input : str | None,
-        output : str | None) -> None:
+        output : str | None,
+        effect_table : bool) -> None:
     ctx.obj = TransferDB(output_file=output)
     ctx.show_default = True
-    ctx.obj.import_cards(input_file=input)
-    click.echo(F"{input} copied to {ctx.obj.output}")
+    if (effect_table):
+        ctx.obj.import_effects(input_file=input)
+        click.echo(F"{input} copied to {ctx.obj.output}")
+    else:
+        ctx.obj.import_cards(input_file=input)
+        click.echo(F"{input} copied to {ctx.obj.output}")
 
 # @cli.command()
 # @click.argument("output", default="card.db")
