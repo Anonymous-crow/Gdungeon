@@ -6,11 +6,13 @@
 #include <list>
 #include <random>
 #include <array>
+#include <iterator>
+#include <cstddef>
 
 #include <catalog.hpp>
 
 class Catalog;
-class Card;
+struct Card;
 
 
 class Entity {
@@ -88,6 +90,44 @@ class Player: public Entity {
 
 class Party {
     public:
+        struct iterator {
+            using iterator_category 
+                = std::contiguous_iterator_tag;
+            using difference_type = std::ptrdiff_t; 
+            using value_type = Player*;
+            using pointer = Player**;
+            using reference = Player*&;
+            public:
+                iterator(pointer ptr) : m_ptr(ptr) {};
+
+                reference operator*() const {return *m_ptr;}
+                pointer operator->() {return m_ptr;}
+
+                iterator& operator++() {
+                    ++m_ptr; 
+                    return *this;
+                    }
+                iterator operator++(int) {
+                    iterator tmp = *this; 
+                    ++m_ptr;
+                    return tmp; 
+                }
+
+                friend bool operator==
+                    (const iterator& a, const iterator& b) {
+                        return a.m_ptr == b.m_ptr;
+                };
+
+                friend bool operator!=
+                    (const iterator& a, const iterator& b) {
+                        return a.m_ptr != b.m_ptr;
+                };
+
+
+            private:
+                pointer m_ptr;
+        };
+        
         Party(Catalog* newCardCatalogPtr) 
             :    cardCatalogPtr(newCardCatalogPtr) {};
         ~Party();
@@ -95,11 +135,18 @@ class Party {
         void addMember(int, 
                 const std::string&, 
                 const std::string&);
-        int size();
-        Player* operator[](int);
+        int size() const;
+        Player* const operator[](int) const;
         std::string print();
+
+        iterator begin();
+        iterator end();
+
     private:
-        std::array<Player*, 4> partyList{nullptr};
+        Player* partyList[4] {nullptr, 
+                              nullptr, 
+                              nullptr, 
+                              nullptr};
         Catalog* cardCatalogPtr{nullptr};
 };
 

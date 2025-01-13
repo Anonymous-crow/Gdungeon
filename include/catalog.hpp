@@ -116,7 +116,7 @@ class Catalog {
     public:
         Card* getCardByID(const std::string&);
         int getCopiesByID(const std::string&);
-        void clearUnused(const Party*);
+        void clearUnused(Party*);
         void clearUnused(const Player*);
         Catalog();
         ~Catalog();

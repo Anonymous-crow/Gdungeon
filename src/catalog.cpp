@@ -158,8 +158,10 @@ std::list<std::string> Catalog::searchForAllCards() const {
     return cardList;
 }
 
-void Catalog::clearUnused(const Party*) {
-
+void Catalog::clearUnused(Party* partyClear) {
+    for (Player* e : *partyClear) {
+        clearUnused(e);
+    }
 }
 
 void Catalog::clearUnused(const Player* playerClear) {

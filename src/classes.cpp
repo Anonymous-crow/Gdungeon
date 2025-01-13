@@ -149,38 +149,72 @@ Player::~Player() {
     discard.clear();
 }
 
-Player* Party::operator[](int index) {
+Player* const Party::operator[](int index) const {
     if (index >= size() || index < 0) {
         throw std::out_of_range("Index is out of range.");
     }
     return partyList[index];
 }
 
+Party::iterator Party::begin() {
+    return iterator(&partyList[0]);
+}
 
-void Party::addMember(Player* newPlayer) {
+Party::iterator Party::end() {
+    int nullPos{0};
     for (int i{0}; i < 4; ++i) {
         if (partyList[i] == nullptr) {
-            partyList[i] = newPlayer;
             break;
+        } else {
+            ++nullPos;
         }
+    }
+    return iterator(&partyList[nullPos]);
+}
+
+
+void Party::addMember(Player* newPlayer) {
+    bool idNotFound{true};
+    int nullPos{4};
+    for (int i{3}; i > -1; --i) {
+        if (partyList[i] != nullptr) {
+            if(partyList[i]->getID() == newPlayer->getID()) {
+                idNotFound = false;
+                break;
+            }
+        } else {
+            nullPos = i;
+        }
+    }
+    if (idNotFound && nullPos < 4) {
+        partyList[nullPos] = newPlayer;
     }
 }
 
 void Party::addMember(int newHp, 
                       const std::string& newName,
                       const std::string& newID) {
-    for (int i{0}; i < 4; ++i) {
-        if (partyList[i] == nullptr) {
-            partyList[i] = new Player(newHp, 
-                                      newName, 
-                                      newID,
-                                      cardCatalogPtr);
-            break;
+    bool idNotFound{true};
+    int nullPos{4};
+    for (int i{3}; i > -1; --i) {
+        if (partyList[i] != nullptr) {
+            if(partyList[i]->getID() == newID) {
+                idNotFound = false;
+                break;
+            }
+        } else {
+            nullPos = i;
         }
+    }
+    if (idNotFound && nullPos < 4) {
+        partyList[nullPos] = new Player(newHp, 
+                                          newName, 
+                                          newID,
+                                          cardCatalogPtr);
     }
 }
 
-int Party::size() {
+int Party::size() const{
     int resp{0}; 
     for (int i{0}; i < 4; ++i){
         if (partyList[i] != nullptr) {

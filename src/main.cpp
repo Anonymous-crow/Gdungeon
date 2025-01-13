@@ -31,7 +31,8 @@ int main(int argLen, char** args){
     party[0]->addCardToDeck("rudy_Cover", 7);
     party[0]->removeCardFromDeck("rudy_Punch", 2);
     party[0]->removeCardFromDeck("rudy_Cover", 2);
-    cardCatalog.clearUnused(party[0]);
+    // cardCatalog.clearUnused(party[0]);
+    cardCatalog.clearUnused(&party);
     std::cout << std::endl;
     std::cout << "Hello, from Gdungeon!" << std::endl;
     std::cout << party.print() << std::endl;
