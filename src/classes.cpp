@@ -137,22 +137,11 @@ void Player::removeCardFromDeck(const std::string& cardID,
 } 
 
 Player::~Player() {
-    // for (auto& e : deck) {
-    //     delete e;
-    // }
     deck.clear();
-    // for (auto& e : draw) {
-    //     delete e;
-    // }
     draw.clear();
-    // for (auto& e : hand) {
-    //     delete e;
-    // }
     hand.clear();
-    // for (auto& e : discard) {
-    //     delete e;
-    // }
     discard.clear();
+    cardCatalogPtr->clearUnused(this);
 }
 
 Player* const Party::operator[](int index) const {
@@ -176,6 +165,64 @@ Party::iterator Party::end() {
         }
     }
     return iterator(&partyList[nullPos]);
+}
+
+inline void Party::swap(iterator& a, iterator& b) {
+    Player* tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
+
+Party::iterator Party::erase(Party::iterator it) {
+    Party::iterator end = this->end();
+    if (it == end) {
+        return end;
+    }
+    delete *it;
+    *it = nullptr;
+    Party::iterator nullIt = it++;
+    if (it == end) {
+        return nullIt;
+    }
+    while (it != end) {
+        if (*it != nullptr) {
+            *nullIt = *it;
+            *it = nullptr;
+            ++nullIt;
+        }
+        ++it;
+    }
+    return --nullIt;
+}
+
+Party::iterator Party::erase(Party::iterator itStart, 
+                             Party::iterator itEnd) {
+    if (itStart == itEnd) {
+        return itStart;
+    }
+    Party::iterator end = this->end();
+    if (itStart == end) {
+        return end;
+    }
+    for (Party::iterator it = itStart; 
+         (it != itEnd) && (it != end); 
+         ++it) {
+        delete *it;
+        *it = nullptr;
+    }
+    if (itEnd == end) {
+        return itStart;
+    }
+    Party::iterator current = itStart;
+    while (*itEnd < *end) {
+        if (*itEnd != nullptr) {
+            *current = *itEnd;
+            *itEnd = nullptr;
+            ++current;
+        }
+        ++itEnd;
+    }
+    return itStart;
 }
 
 
@@ -236,8 +283,8 @@ std::string Party::print() {
     out << "Members:\n";
     for (Player* e : partyList) {
         if (e != nullptr) {
-            out << "\t* " << e->getName() << "\n";
-            out << e->getDeckString();
+            out << "\t* " << e->getName() << "\n"
+            << e->getDeckString();
         }
     }
     return out.str();

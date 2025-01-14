@@ -33,10 +33,13 @@ int main(int argLen, char** args){
     party[0]->removeCardFromDeck("rudy_Punch", 2);
     party[0]->removeCardFromDeck("rudy_Cover", 2);
     // cardCatalog.clearUnused(party[0]);
+    party.erase((party.begin() + 2));
+    party.addMember(18, "“Slick”", "slick");
     cardCatalog.clearUnused(&party);
+    party.erase(party.begin(), (party.begin() + 1));
     std::cout << std::endl;
-    std::cout << "Hello, from Gdungeon!" << std::endl;
-    std::cout << party.print() << std::endl;
+    std::cout << "Hello, from Gdungeon!\n" 
+    << party.print() << std::endl;
     // std::cout << cardCatalog.getUnusedCards() << std::endl;
     std::cout << "Press enter to continue...";
     std::cin.get();

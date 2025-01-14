@@ -98,30 +98,70 @@ class Party {
             using pointer = Player**;
             using reference = Player*&;
             public:
+                iterator() : m_ptr{nullptr} {};
                 iterator(pointer ptr) : m_ptr(ptr) {};
 
-                reference operator*() const {return *m_ptr;}
-                pointer operator->() {return m_ptr;}
+                inline reference operator*() const {
+                    return *m_ptr;
+                }
+                inline pointer operator->() {return m_ptr;}
 
-                iterator& operator++() {
+                inline reference operator[]
+                        (difference_type rhs) {
+                    return m_ptr[rhs];
+                }
+
+                inline iterator& operator++() {
                     ++m_ptr; 
                     return *this;
                 }
-                iterator operator++(int) {
+                inline iterator operator++(int) {
                     iterator tmp = *this; 
                     ++m_ptr;
                     return tmp; 
                 }
 
-                friend bool operator==
+                inline iterator& operator--() {
+                    --m_ptr; 
+                    return *this;
+                }
+                inline iterator operator--(int) {
+                    iterator tmp = *this; 
+                    --m_ptr;
+                    return tmp; 
+                }
+
+                inline iterator operator+
+                        (difference_type rhs) {
+                    return iterator(m_ptr + rhs);
+                }
+
+                inline iterator operator-
+                        (difference_type rhs) {
+                    return iterator(m_ptr - rhs);
+                }
+
+                inline friend iterator operator+
+                        (difference_type lhs, iterator& rhs) {
+                    return iterator(rhs.m_ptr + lhs);
+                };
+
+                inline friend iterator operator-
+                        (difference_type lhs, iterator& rhs) {
+                    return iterator(rhs.m_ptr - lhs);
+                };
+
+                inline friend bool operator==
                     (const iterator& a, const iterator& b) {
                         return a.m_ptr == b.m_ptr;
                 };
 
-                friend bool operator!=
+                inline friend bool operator!=
                     (const iterator& a, const iterator& b) {
                         return a.m_ptr != b.m_ptr;
                 };
+
+                friend class Party;
 
 
             private:
@@ -141,6 +181,16 @@ class Party {
 
         iterator begin();
         iterator end();
+
+        inline void swap(iterator&, iterator&);
+
+        
+        iterator erase(iterator);
+        iterator erase(iterator, iterator);
+        iterator remove(const std::string&);
+        iterator remove(iterator&, 
+                        iterator&, 
+                        const std::string&);
 
     private:
         Player* partyList[4] {nullptr, 
