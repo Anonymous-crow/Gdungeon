@@ -21,13 +21,8 @@ int main(int argLen, char** args){
     Party party(&cardCatalog);
     Cli interface(argLen, args);
     createTheGuys(party);
-    party[0]->addCardToDeck("rudy_Punch");
-    party[0]->addCardToDeck("rudy_Punch");
-    party[0]->addCardToDeck("rudy_Punch");
-    party[0]->addCardToDeck("rudy_Punch");
-    party[0]->addCardToDeck("rudy_Punch");
+    party[0]->addCardToDeck("rudy_Punch", 4);
     party[0]->addCardToDeck("rudy_Block");
-    party[0]->addCardToDeck("wingledonger");
     party[0]->addCardToDeck("rudy_Block", 7);
     party[0]->addCardToDeck("rudy_Cover", 7);
     party[0]->removeCardFromDeck("rudy_Punch", 2);

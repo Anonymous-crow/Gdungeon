@@ -15,24 +15,8 @@ set(CMAKE_DEBUG_POSTFIX d)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-include(GenerateExportHeader)
-
 if(WIN32)
 
-    # include(ExternalProject)
-    # ExternalProject_Add(
-    #     sqlite3
-    #     PREFIX ${CMAKE_BINARY_DIR}/sqlite3
-    #     URL "https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip"
-    #     CONFIGURE_COMMAND ""
-    #     BUILD_COMMAND "cl.exe ${CMAKE_BINARY_DIR}/sqlite3/src/sqlite3/sqlite3.c -DSQLITE_API=__declspec(dllexport) -link -dll -out:sqlite3.dll"
-    #     INSTALL_COMMAND ""
-    #     LOG_DOWNLOAD ON
-    #     DOWNLOAD_EXTRACT_TIMESTAMP true
-    # )
-    # ExternalProject_Get_Property(sqlite3 source_dir)
-    # set(SQLite3_INCLUDE_DIR ${source_dir})
-    # message(SQLite3_INCLUDE_DIR=${SQLite3_INCLUDE_DIR})
     include(FetchContent)
     FetchContent_Declare(SQLite
         URL "https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip"
@@ -45,12 +29,6 @@ if(WIN32)
     target_include_directories(sqlite3 PRIVATE
         ${sqlite_SOURCE_DIR}
     )
-    # generate_export_header(sqlite3)
-    # set_target_properties(sqlite3
-    #     PROPERTIES
-    #     PUBLIC_HEADER
-    #     ${PROJECT_BINARY_DIR}/sqlite3_export.h
-    # )
 else()
     find_package(SQLite3 REQUIRED)
 endif()
@@ -80,7 +58,6 @@ target_compile_definitions(${PROJECT_NAME}
 )
 
 if(WIN32)
-    # include_directories(PRIVATE ${Sqlite3IncludeDir})
     target_link_libraries(${PROJECT_NAME} PRIVATE 
         sqlite3
     )
