@@ -4,18 +4,25 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "")
 if(UNIX)
     set(sqlite_SOURCE_DIR "")
 endif()
-message(${PROJECT_INCLUDE_DIR})
 
 
 add_library(testCommon SHARED
         ${PROJECT_SOURCE_DIR}/catalog.cpp
         ${PROJECT_SOURCE_DIR}/classes.cpp
-        ${BUILDSQLITE}
 )
 target_include_directories(testCommon PRIVATE 
         ${PROJECT_INCLUDE_DIR}
         ${sqlite_SOURCE_DIR}
 )
+if(WIN32)
+    target_link_libraries(testCommon PRIVATE
+            sqlite3
+    )
+else()
+    target_link_libraries(testCommon PRIVATE
+        SQLite::SQLite3
+    )
+endif()
 set_target_properties(testCommon 
         PROPERTIES 
         VERSION 
@@ -34,11 +41,6 @@ add_executable(addPartyMember
 target_link_libraries(addPartyMember PRIVATE
     testCommon
 )
-if(UNIX)
-    target_link_libraries(addPartyMember PRIVATE
-        SQLite::SQLite3
-    )
-endif()
 target_include_directories(addPartyMember 
     PRIVATE 
     ${PROJECT_INCLUDE_DIR}
@@ -59,11 +61,6 @@ add_executable(removePartyMember
 target_link_libraries(removePartyMember PRIVATE
     testCommon
 )
-if(UNIX)
-    target_link_libraries(removePartyMember PRIVATE
-        SQLite::SQLite3
-    )
-endif()
 
 target_include_directories(removePartyMember 
     PRIVATE 

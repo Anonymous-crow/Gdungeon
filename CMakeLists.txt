@@ -39,18 +39,20 @@ if(WIN32)
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
     FetchContent_MakeAvailable(SQLite)
-    message(SQLite3_INCLUDE_DIR=${sqlite_SOURCE_DIR})
-    set(BUILDSQLITE "${sqlite_SOURCE_DIR}/sqlite3.c")
     add_library(sqlite3 SHARED
-        ${BUILDSQLITE}
+        ${sqlite_SOURCE_DIR}/sqlite3.c
     )
     target_include_directories(sqlite3 PRIVATE
         ${sqlite_SOURCE_DIR}
     )
     generate_export_header(sqlite3)
+    set_target_properties(sqlite3
+        PROPERTIES
+        PUBLIC_HEADER
+        ${PROJECT_BINARY_DIR}/sqlite3_export.h
+    )
 else()
     find_package(SQLite3 REQUIRED)
-    set(BUILDSQLITE "")
 endif()
 
 
@@ -80,21 +82,19 @@ target_compile_definitions(${PROJECT_NAME}
 if(WIN32)
     # include_directories(PRIVATE ${Sqlite3IncludeDir})
     target_link_libraries(${PROJECT_NAME} PRIVATE 
-    sqlite3
+        sqlite3
     )
     target_include_directories(${PROJECT_NAME} PUBLIC "${sqlite_SOURCE_DIR}")
-    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/cards.db)
 else()
     target_link_libraries(${PROJECT_NAME} 
         PRIVATE SQLite::SQLite3
     )
-    set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db)
 endif()
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
                        ${THIS_HOME_DIR}/assets/cards.db
-                       ${ASSET_DEST}
+                       ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db
 )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
