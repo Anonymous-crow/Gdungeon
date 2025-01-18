@@ -13,6 +13,9 @@ set(PROJECT_INCLUDE_DIR "${THIS_HOME_DIR}/include")
 
 set(CMAKE_DEBUG_POSTFIX d)
 
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
+include(GenerateExportHeader)
 
 if(WIN32)
 
@@ -38,6 +41,13 @@ if(WIN32)
     FetchContent_MakeAvailable(SQLite)
     message(SQLite3_INCLUDE_DIR=${sqlite_SOURCE_DIR})
     set(BUILDSQLITE "${sqlite_SOURCE_DIR}/sqlite3.c")
+    add_library(sqlite3 SHARED
+        ${BUILDSQLITE}
+    )
+    target_include_directories(sqlite3 PRIVATE
+        ${sqlite_SOURCE_DIR}
+    )
+    generate_export_header(sqlite3)
 else()
     find_package(SQLite3 REQUIRED)
     set(BUILDSQLITE "")
@@ -55,7 +65,6 @@ add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/classes.cpp
     ${PROJECT_SOURCE_DIR}/catalog.cpp
     ${PROJECT_SOURCE_DIR}/cli.cpp
-    ${BUILDSQLITE}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
@@ -70,6 +79,9 @@ target_compile_definitions(${PROJECT_NAME}
 
 if(WIN32)
     # include_directories(PRIVATE ${Sqlite3IncludeDir})
+    target_link_libraries(${PROJECT_NAME} PRIVATE 
+    sqlite3
+    )
     target_include_directories(${PROJECT_NAME} PUBLIC "${sqlite_SOURCE_DIR}")
     set(ASSET_DEST ${EXECUTABLE_OUTPUT_PATH}/Release/assets/cards.db)
 else()

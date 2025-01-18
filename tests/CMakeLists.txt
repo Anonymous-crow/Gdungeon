@@ -1,48 +1,48 @@
 set(EXECUTABLE_OUTPUT_PATH "")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "")
 
-add_library(testClasses SHARED
-    ${PROJECT_SOURCE_DIR}/classes.cpp
-)
-target_include_directories(testClasses PRIVATE ${PROJECT_INCLUDE_DIR})
-set_target_properties(testClasses 
-            PROPERTIES 
-            VERSION 
-            ${PROJECT_VERSION}
-)
-set_target_properties(testClasses 
-            PROPERTIES 
-            SOVERSION 
-            ${PROJECT_VERSION_MAJOR}
-)
+if(UNIX)
+    set(sqlite_SOURCE_DIR "")
+endif()
+message(${PROJECT_INCLUDE_DIR})
 
 
-add_library(testCatalog SHARED
-    ${PROJECT_SOURCE_DIR}/catalog.cpp
+add_library(testCommon SHARED
+        ${PROJECT_SOURCE_DIR}/catalog.cpp
+        ${PROJECT_SOURCE_DIR}/classes.cpp
+        ${BUILDSQLITE}
 )
-target_include_directories(testCatalog PRIVATE ${PROJECT_INCLUDE_DIR})
-set_target_properties(testCatalog 
-            PROPERTIES 
-            VERSION 
-            ${PROJECT_VERSION}
+target_include_directories(testCommon PRIVATE 
+        ${PROJECT_INCLUDE_DIR}
+        ${sqlite_SOURCE_DIR}
 )
-set_target_properties(testCatalog 
-            PROPERTIES 
-            SOVERSION 
-            ${PROJECT_VERSION_MAJOR}
+set_target_properties(testCommon 
+        PROPERTIES 
+        VERSION 
+        ${PROJECT_VERSION}
 )
+set_target_properties(testCommon 
+        PROPERTIES 
+        SOVERSION 
+        ${PROJECT_VERSION_MAJOR}
+)
+generate_export_header(testCommon)
 
 add_executable(addPartyMember
     addPartyMember.cpp
 )
 target_link_libraries(addPartyMember PRIVATE
-    testCatalog
-    testClasses
-    SQLite::SQLite3
+    testCommon
 )
+if(UNIX)
+    target_link_libraries(addPartyMember PRIVATE
+        SQLite::SQLite3
+    )
+endif()
 target_include_directories(addPartyMember 
     PRIVATE 
     ${PROJECT_INCLUDE_DIR}
+    ${sqlite_SOURCE_DIR}
 )
 add_test(NAME addPartyMember
          COMMAND addPartyMember
@@ -54,16 +54,21 @@ set_property (TEST addPartyMember
 )
 
 add_executable(removePartyMember
-removePartyMember.cpp
+    removePartyMember.cpp
 )
 target_link_libraries(removePartyMember PRIVATE
-    testCatalog
-    testClasses
-    SQLite::SQLite3
+    testCommon
 )
+if(UNIX)
+    target_link_libraries(removePartyMember PRIVATE
+        SQLite::SQLite3
+    )
+endif()
+
 target_include_directories(removePartyMember 
     PRIVATE 
     ${PROJECT_INCLUDE_DIR}
+    ${sqlite_SOURCE_DIR}
 )
 add_test(NAME removePartyMember
          COMMAND removePartyMember
