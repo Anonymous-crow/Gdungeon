@@ -13,6 +13,7 @@ add_library(testCommon SHARED
 target_include_directories(testCommon PRIVATE 
         ${PROJECT_INCLUDE_DIR}
         ${sqlite_SOURCE_DIR}
+        ${PROJECT_BINARY_DIR}
 )
 if(WIN32)
     target_link_libraries(testCommon PRIVATE
@@ -45,6 +46,7 @@ target_include_directories(addPartyMember
     PRIVATE 
     ${PROJECT_INCLUDE_DIR}
     ${sqlite_SOURCE_DIR}
+    ${PROJECT_BINARY_DIR}
 )
 add_test(NAME addPartyMember
          COMMAND addPartyMember
@@ -61,7 +63,6 @@ add_executable(removePartyMember
 target_link_libraries(removePartyMember PRIVATE
     testCommon
 )
-
 target_include_directories(removePartyMember 
     PRIVATE 
     ${PROJECT_INCLUDE_DIR}

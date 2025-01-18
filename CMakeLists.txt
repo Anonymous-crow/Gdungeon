@@ -39,7 +39,7 @@ if(WIN32)
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
     FetchContent_MakeAvailable(SQLite)
-    add_library(sqlite3 SHARED
+    add_library(sqlite3 STATIC
         ${sqlite_SOURCE_DIR}/sqlite3.c
     )
     target_include_directories(sqlite3 PRIVATE
