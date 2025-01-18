@@ -8,8 +8,8 @@ set(THIS_HOME_DIR ${PROJECT_SOURCE_DIR})
 set(EXECUTABLE_OUTPUT_PATH ${THIS_HOME_DIR}/bin)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${THIS_HOME_DIR}/bin>)
 
-set(PROJECT_SOURCE_DIR "src")
-set(PROJECT_INCLUDE_DIR "include")
+set(PROJECT_SOURCE_DIR "${THIS_HOME_DIR}/src")
+set(PROJECT_INCLUDE_DIR "${THIS_HOME_DIR}/include")
 
 set(CMAKE_DEBUG_POSTFIX d)
 
@@ -47,13 +47,14 @@ endif()
 if(PROJECT_IS_TOP_LEVEL)
   include(CTest)
   enable_testing()
+  add_subdirectory("tests")
 endif()
 
 add_executable(${PROJECT_NAME} 
-    src/main.cpp
-    src/classes.cpp
-    src/catalog.cpp
-    src/cli.cpp
+    ${PROJECT_SOURCE_DIR}/main.cpp
+    ${PROJECT_SOURCE_DIR}/classes.cpp
+    ${PROJECT_SOURCE_DIR}/catalog.cpp
+    ${PROJECT_SOURCE_DIR}/cli.cpp
     ${BUILDSQLITE}
 )
 
@@ -82,7 +83,7 @@ add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
                    COMMAND ${CMAKE_COMMAND} -E copy_if_different
                        ${THIS_HOME_DIR}/assets/cards.db
                        ${ASSET_DEST}
-                   )
+)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
@@ -91,6 +92,8 @@ set(CPACK_PACKAGE_DIRECTORY ${THIS_HOME_DIR}/package)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 install(DIRECTORY assets/ DESTINATION assets/)
+
+option(CPACK_BINARY_TZ off)
 
 set(CPACK_PACKAGE_VENDOR "ComradeCrow")
 # set(CPACK_RESOURCE_FILE_LICENSE ${ytcpp_HOME_DIR}/LICENSE.txt)

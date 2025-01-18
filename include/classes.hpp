@@ -175,8 +175,8 @@ class Party {
         void addMember(int, 
                 const std::string&, 
                 const std::string&);
-        int size() const;
-        Player* const operator[](int) const;
+        size_t size() const;
+        Player* const operator[](size_t) const;
         std::string print();
 
         iterator begin();
@@ -187,10 +187,11 @@ class Party {
         
         iterator erase(iterator);
         iterator erase(iterator, iterator);
-        iterator remove(const std::string&);
-        iterator remove(iterator&, 
-                        iterator&, 
-                        const std::string&);
+        iterator remove(const std::string&, int = 1);
+        iterator remove(iterator, 
+                        iterator, 
+                        const std::string&,
+                        int = 1);
 
     private:
         Player* partyList[4] {nullptr, 

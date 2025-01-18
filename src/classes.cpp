@@ -144,7 +144,7 @@ Player::~Player() {
     cardCatalogPtr->clearUnused(this);
 }
 
-Player* const Party::operator[](int index) const {
+Player* const Party::operator[](size_t index) const {
     if (index >= size() || index < 0) {
         throw std::out_of_range("Index is out of range.");
     }
@@ -214,7 +214,7 @@ Party::iterator Party::erase(Party::iterator itStart,
         return itStart;
     }
     Party::iterator current = itStart;
-    while (*itEnd < *end) {
+    while (*itEnd != *end) {
         if (*itEnd != nullptr) {
             *current = *itEnd;
             *itEnd = nullptr;
@@ -225,6 +225,26 @@ Party::iterator Party::erase(Party::iterator itStart,
     return itStart;
 }
 
+Party::iterator Party::remove(const std::string& id, int limit) {
+    return remove(begin(), end(), id, limit);
+}
+
+Party::iterator Party::remove(iterator itb,
+                              iterator ite,
+                              const std::string& id,
+                              int limit) {
+    int i{0};
+    while (itb != ite && i < limit) {
+        if ((*itb)->getID() == id) {
+            itb = erase(itb);
+            --ite;
+            ++i;
+        } else {
+            ++itb;
+        }
+    }
+    return ite;
+}
 
 void Party::addMember(Player* newPlayer) {
     bool idNotFound{true};
@@ -267,7 +287,7 @@ void Party::addMember(int newHp,
     }
 }
 
-int Party::size() const{
+size_t Party::size() const{
     int resp{0}; 
     for (int i{0}; i < 4; ++i){
         if (partyList[i] != nullptr) {
