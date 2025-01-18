@@ -8,7 +8,7 @@ on:
     tags-ignore:
       - 'v*.*.*'
       - 'rc*'
-      - 'nobuild'
+      - 'nobuild*'
   pull_request:
     branches: [ "main" ]
 
