@@ -33,7 +33,7 @@ set_target_properties(testCommon
         SOVERSION 
         ${PROJECT_VERSION_MAJOR}
 )
-generate_export_header(testCommon)
+# generate_export_header(testCommon)
 
 add_executable(addPartyMember
     addPartyMember.cpp

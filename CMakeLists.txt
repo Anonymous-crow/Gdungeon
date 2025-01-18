@@ -45,12 +45,12 @@ if(WIN32)
     target_include_directories(sqlite3 PRIVATE
         ${sqlite_SOURCE_DIR}
     )
-    generate_export_header(sqlite3)
-    set_target_properties(sqlite3
-        PROPERTIES
-        PUBLIC_HEADER
-        ${PROJECT_BINARY_DIR}/sqlite3_export.h
-    )
+    # generate_export_header(sqlite3)
+    # set_target_properties(sqlite3
+    #     PROPERTIES
+    #     PUBLIC_HEADER
+    #     ${PROJECT_BINARY_DIR}/sqlite3_export.h
+    # )
 else()
     find_package(SQLite3 REQUIRED)
 endif()
