@@ -1,4 +1,4 @@
-#include "catalog.hpp"
+#include <catalog.hpp>
 #include <string>
 #include <bitset>
 #include <list>
@@ -215,6 +215,10 @@ void Catalog::clearUnused(const Player* playerClear) {
             }
         }
     }
+}
+
+bool Catalog::isCached(const std::string& cardID) {
+    return cardMap.find(cardID) != cardMap.cend();
 }
 
 void Catalog::openDB() {

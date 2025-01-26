@@ -30,7 +30,8 @@ int main(int argLen, char** args){
         else std::cout << "Erase 2 Fail" << std::endl;
     } else {throw std::runtime_error("Erase 2 Fail");}
     party.remove("slick");
-    if (party.size() == 0 && party.begin() == party.end()) test3 = true;
+    if (party.size() == 0 && party.begin() == party.end()) 
+        test3 = true;
     else std::cout << "Remove Fail" << std::endl;
 
     if (test1 && test2 && test3) std::cout << "All Tests Passed" 

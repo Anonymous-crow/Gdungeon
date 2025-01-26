@@ -14,6 +14,7 @@ add_custom_target(link_target ALL
 add_library(testCommon SHARED
         ${PROJECT_SOURCE_DIR}/catalog.cpp
         ${PROJECT_SOURCE_DIR}/classes.cpp
+        ${PROJECT_SOURCE_DIR}/arena.cpp
 )
 target_include_directories(testCommon PRIVATE 
         ${PROJECT_INCLUDE_DIR}
@@ -101,7 +102,27 @@ add_test(NAME addCard
          WORKING_DIRECTORY ${THIS_HOME_DIR}
 )
 set (passRegex "All Tests Passed")
-set (failRegex "Error" "Fail")
 set_property (TEST addCard
+              PROPERTY PASS_REGULAR_EXPRESSION "${passRegex}"
+)
+
+
+add_executable(removeCard
+removeCard.cpp
+)
+target_link_libraries(removeCard PRIVATE
+    testCommon
+)
+target_include_directories(removeCard 
+    PRIVATE 
+    ${PROJECT_INCLUDE_DIR}
+    ${sqlite_SOURCE_DIR}
+)
+add_test(NAME removeCard
+         COMMAND removeCard
+         WORKING_DIRECTORY ${THIS_HOME_DIR}
+)
+set (passRegex "^All Tests Passed")
+set_property (TEST removeCard
               PROPERTY PASS_REGULAR_EXPRESSION "${passRegex}"
 )

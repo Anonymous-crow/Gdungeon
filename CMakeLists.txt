@@ -33,6 +33,10 @@ else()
     find_package(SQLite3 REQUIRED)
 endif()
 
+find_package(Doxygen)
+if (DOXYGEN_FOUND)
+    # something
+endif()
 
 if(PROJECT_IS_TOP_LEVEL)
   include(CTest)
@@ -45,6 +49,7 @@ add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/classes.cpp
     ${PROJECT_SOURCE_DIR}/catalog.cpp
     ${PROJECT_SOURCE_DIR}/cli.cpp
+    ${PROJECT_SOURCE_DIR}/arena.cpp
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
@@ -83,8 +88,9 @@ install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION .)
 install(DIRECTORY assets/ DESTINATION assets/)
 
 option(CPACK_BINARY_TZ off)
+# set(CPACK_RPM_PACKAGE_REQUIRES "sqlite3")
 
 set(CPACK_PACKAGE_VENDOR "ComradeCrow")
-# set(CPACK_RESOURCE_FILE_LICENSE ${ytcpp_HOME_DIR}/LICENSE.txt)
-# set(CPACK_RESOURCE_FILE_README ${ytcpp_HOME_DIR}/README.md)
+# set(CPACK_RESOURCE_FILE_LICENSE ${THIS_HOME_DIR}/LICENSE.txt)
+# set(CPACK_RESOURCE_FILE_README ${THIS_HOME_DIR}/README.md)
 include(CPack)

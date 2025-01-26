@@ -20,7 +20,7 @@ int main(int argLen, char** args){
     std::map<std::string, int> contents = party[0]->getDeckContents();
     int copies = cardCatalog.getCopiesByID("rudy_Punch");
     copies = copies > 5 ? 5 : copies;
-    int size = contents.size();
+    int size = static_cast<int>(contents.size());
     if (size == 1 && 
         contents["rudy_Punch"] == copies)
         test1 = true;
@@ -31,7 +31,7 @@ int main(int argLen, char** args){
     contents = party[0]->getDeckContents();
     copies = cardCatalog.getCopiesByID("rudy_Block");
     copies = copies > 8 ? 8 : copies;
-    size = contents.size();
+    size = static_cast<int>(contents.size());
     if (size == 2 && 
         contents["rudy_Block"] == copies)
         test2 = true;
@@ -40,7 +40,7 @@ int main(int argLen, char** args){
     contents = party[0]->getDeckContents();
     copies = cardCatalog.getCopiesByID("rudy_Cover");
     copies = copies > 7 ? 7 : copies;
-    size = contents.size();
+    size = static_cast<int>(contents.size());
     if (size == 3 && 
         contents["rudy_Cover"] == copies)
         test3 = true;

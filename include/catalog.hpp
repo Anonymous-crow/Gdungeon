@@ -126,6 +126,7 @@ class Catalog {
         int getCopiesByID(const std::string&);
         void clearUnused(Party*);
         void clearUnused(const Player*);
+        bool isCached(const std::string&);
         Catalog();
         ~Catalog();
     private:

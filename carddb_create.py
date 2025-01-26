@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS "cardEffects" (
 )
 ''')
 
-    def read_csv(self, input_file : str) -> None:
+    def read_csv(self, input_file : str) -> list[dict[str, str | bool]]:
         with open(input_file, "r") as f:
             return [row for row in csv.DictReader(f.readlines())]
         
@@ -110,8 +110,6 @@ CREATE TABLE IF NOT EXISTS "cardEffects" (
     def import_effects(self, input_file : str) -> None:
         csvdata = self.read_csv(input_file)
         for i in csvdata:
-            for j in []:
-                i[j] = i[j] == "TRUE"
             self.data.execute("""INSERT OR REPLACE INTO "cardEffects" values (
                               :CARDID,
                               :SHIELD,
@@ -157,7 +155,7 @@ CREATE TABLE IF NOT EXISTS "cardEffects" (
 @click.option('-o', '--output', default=None)
 @click.option('-e', '--effect-table', is_flag=True)
 def cli(ctx,
-        input : str | None,
+        input : str,
         output : str | None,
         effect_table : bool) -> None:
     ctx.obj = TransferDB(output_file=output)
