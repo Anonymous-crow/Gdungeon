@@ -38,8 +38,10 @@ struct Effect {
     int stack;
 };
 
+//! This will be used to represent Player cards
 struct Card {
     public:
+        //! A constructor designed for use with SQLite
         Card(char **argv)
              :  name(argv[0]),
                 cardID(argv[1]),
@@ -57,7 +59,8 @@ struct Card {
                 repeat(std::stoi(argv[13])),
                 exhaust(std::strcmp(argv[14], "1") == 0)
                 {};
-        
+       
+        //! A general-use constructor
         Card(const char* newName,
              const char* newID,
              const char* newTagline,
@@ -109,10 +112,12 @@ struct Card {
         std::list<Effect> EffectList;
 };
 
+//! The struct to be used in enemy intentions
 struct EnemyCard {
-
+  // TODO implement enemy cards
 };
 
+//! used by Enemies to attack and is shown to the player ahead of time
 struct Intention {
     EnemyCard Type;
     bool hasPosition{true};
@@ -120,8 +125,33 @@ struct Intention {
     bool barrage{false};
 };
 
+/*************************************************************//**
+* Used to fetch cards from an SQLite database.
+*
+* The Catalog class uses cardIDs in order to fetch cards from the 
+* sqlite database, and store pointers to them in a map, so they 
+* can be used again without another fetch.  It also deletes any
+* cards from memory when they are no longer needed by the player
+* classes.
+*
+* ***************************************************************/
 class Catalog {
     public:
+        /*********************************//**
+        * fetch and return cards by cardID
+        *
+        * This function first searches cards 
+        * already in memory, then creates it 
+        * from the database if it does not. 
+        *
+        * @param cardID The ID to search for 
+        * and create if not found.
+        *
+        * @return A pointer to the card with 
+        * the matching cardID. Returns 
+        * nullptr when the card with cardID 
+        * is not found.
+        * ***********************************/
         Card* getCardByID(const std::string&);
         int getCopiesByID(const std::string&);
         void clearUnused(Party*);
@@ -142,6 +172,7 @@ class Catalog {
         sqlite3* db;
     friend int intCallBack(void *, int, char **, char **);
     friend int cardCallback(void *, int, char **, char **);
+    friend int cardMapCallback(void *, int, char**, char**);
     friend int stringListCallback(void *, 
                                   int, 
                                   char **, 

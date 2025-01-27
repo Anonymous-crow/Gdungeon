@@ -17,25 +17,34 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 if(WIN32)
 
-    include(FetchContent)
-    FetchContent_Declare(SQLite
+  include(FetchContent)
+  FetchContent_Declare(SQLite
         URL "https://www.sqlite.org/2024/sqlite-amalgamation-3470200.zip"
         DOWNLOAD_EXTRACT_TIMESTAMP true
     )
-    FetchContent_MakeAvailable(SQLite)
-    add_library(sqlite3 STATIC
+  FetchContent_MakeAvailable(SQLite)
+  add_library(sqlite3 STATIC
         ${sqlite_SOURCE_DIR}/sqlite3.c
     )
-    target_include_directories(sqlite3 PRIVATE
+  target_include_directories(sqlite3 PRIVATE
         ${sqlite_SOURCE_DIR}
     )
 else()
-    find_package(SQLite3 REQUIRED)
+  find_package(SQLite3 REQUIRED)
+endif()
+
+if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+  option(BUILD_DOC "Build Documentation" ON)
 endif()
 
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
-    # something
+  set(DOXYGEN_GENERATE_XML YES)
+  set(DOXYGEN_GENERATE_HTML NO)
+  doxygen_add_docs(docs
+    ${THIS_HOME_DIR}
+    COMMENT "Generate ${PROJECT_NAME} documentation"
+  )
 endif()
 
 if(PROJECT_IS_TOP_LEVEL)
@@ -44,7 +53,7 @@ if(PROJECT_IS_TOP_LEVEL)
   add_subdirectory("tests")
 endif()
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME}
     ${PROJECT_SOURCE_DIR}/main.cpp
     ${PROJECT_SOURCE_DIR}/classes.cpp
     ${PROJECT_SOURCE_DIR}/catalog.cpp
@@ -57,18 +66,18 @@ set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-${
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE_DIR})
 
-target_compile_definitions(${PROJECT_NAME}
-    PRIVATE PROGRAM_NAME="${PROJECT_NAME}"
-    PRIVATE VERSION="${PROJECT_VERSION}"
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+    PROGRAM_NAME="${PROJECT_NAME}"
+    VERSION="${PROJECT_VERSION}"
 )
 
 if(WIN32)
-    target_link_libraries(${PROJECT_NAME} PRIVATE 
+  target_link_libraries(${PROJECT_NAME} PRIVATE
         sqlite3
     )
-    target_include_directories(${PROJECT_NAME} PUBLIC "${sqlite_SOURCE_DIR}")
+  target_include_directories(${PROJECT_NAME} PUBLIC "${sqlite_SOURCE_DIR}")
 else()
-    target_link_libraries(${PROJECT_NAME} 
+  target_link_libraries(${PROJECT_NAME}
         PRIVATE SQLite::SQLite3
     )
 endif()
