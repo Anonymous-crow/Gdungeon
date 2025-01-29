@@ -1,12 +1,12 @@
 #ifndef CATALOG_H
 #define CATALOG_H
 
-#include <string>
-#include <cstring>
 #include <bitset>
+#include <cstring>
 #include <list>
 #include <map>
 #include <sqlite3.h>
+#include <string>
 
 #include <classes.hpp>
 
@@ -14,102 +14,68 @@ class Player;
 class Party;
 
 enum EffectType {
-    SHIELD=1,
-    STRENGTH,
-    FORTITUDE,
-    GLINT,
-    MARK,
-    IMMUNITY,
-    RESTORE,
-    CLEAR,
-    TAUNT,
-    WEAK,
-    VULNERABLE,
-    STUN,
+  SHIELD = 1,
+  STRENGTH,
+  FORTITUDE,
+  GLINT,
+  MARK,
+  IMMUNITY,
+  RESTORE,
+  CLEAR,
+  TAUNT,
+  WEAK,
+  VULNERABLE,
+  STUN,
 };
 
 struct Effect {
-    Effect(EffectType newType,
-           int newStack)
-            :   name(newType),
-                stack(newStack) {}
-        
-    EffectType name;
-    int stack;
+  Effect(EffectType newType, int newStack) : name(newType), stack(newStack) {}
+
+  EffectType name;
+  int stack;
 };
 
 //! This will be used to represent Player cards
 struct Card {
-    public:
-        //! A constructor designed for use with SQLite
-        Card(char **argv)
-             :  name(argv[0]),
-                cardID(argv[1]),
-                tagline(argv[2]),
-                description(argv[3]),
-                position(argv[4]),
-                barrage(std::strcmp(argv[5], "1") == 0),
-                team(std::strcmp(argv[6], "1") == 0),
-                energyCost(std::stoi(argv[7])),
-                token(std::strcmp(argv[8], "1") == 0),
-                tokenCost(std::stoi(argv[9])),
-                tokenType(argv[10]),
-                damage(std::stoi(argv[11])),
-                copies(std::stoi(argv[12])),
-                repeat(std::stoi(argv[13])),
-                exhaust(std::strcmp(argv[14], "1") == 0)
-                {};
-       
-        //! A general-use constructor
-        Card(const char* newName,
-             const char* newID,
-             const char* newTagline,
-             const char* newDescription,
-             const std::bitset<4>& newPosition,
-             bool newBarrage,
-             bool newTeam,
-             int newEnergyCost,
-             bool newToken,
-             int newTokenCost,
-             const char* newTokenType,
-             int newDamage,
-             int newCopies,
-             int newRepeat,
-             bool newExhaust,
-             const std::list<Effect>& newEffectList) 
-             :  name(newName),
-                cardID(newID),
-                tagline(newTagline),
-                description(newDescription),
-                position(newPosition),
-                barrage(newBarrage),
-                team(newTeam),
-                energyCost(newEnergyCost),
-                token(newToken),
-                tokenCost(newTokenCost),
-                tokenType(newTokenType),
-                damage(newDamage),
-                copies(newCopies),
-                repeat(newRepeat),
-                exhaust(newExhaust),
-                EffectList(newEffectList)
-                {};
-        std::string name;
-        std::string cardID;
-        std::string tagline;
-        std::string description;
-        std::bitset<4> position;
-        bool barrage{false};
-        bool team{false};
-        int energyCost{0};
-        bool token{false};
-        int tokenCost{2};
-        int damage{0};
-        int copies{1};
-        int repeat{0};
-        bool exhaust;
-        std::string tokenType;
-        std::list<Effect> EffectList;
+public:
+  //! A constructor designed for use with SQLite
+  Card(char **argv)
+      : name(argv[0]), cardID(argv[1]), tagline(argv[2]), description(argv[3]),
+        position(argv[4]), barrage(std::strcmp(argv[5], "1") == 0),
+        team(std::strcmp(argv[6], "1") == 0), energyCost(std::stoi(argv[7])),
+        token(std::strcmp(argv[8], "1") == 0), tokenCost(std::stoi(argv[9])),
+        tokenType(argv[10]), damage(std::stoi(argv[11])),
+        copies(std::stoi(argv[12])), repeat(std::stoi(argv[13])),
+        exhaust(std::strcmp(argv[14], "1") == 0) {};
+
+  //! A general-use constructor
+  Card(const char *newName, const char *newID, const char *newTagline,
+       const char *newDescription, const std::bitset<4> &newPosition,
+       bool newBarrage, bool newTeam, int newEnergyCost, bool newToken,
+       int newTokenCost, const char *newTokenType, int newDamage, int newCopies,
+       int newRepeat, bool newExhaust, const std::list<Effect> &newEffectList)
+      : name(newName), cardID(newID), tagline(newTagline),
+        description(newDescription), position(newPosition), barrage(newBarrage),
+        team(newTeam), energyCost(newEnergyCost), token(newToken),
+        tokenCost(newTokenCost), tokenType(newTokenType), damage(newDamage),
+        copies(newCopies), repeat(newRepeat), exhaust(newExhaust),
+        EffectList(newEffectList) {};
+  std::string name;
+  std::string cardID;
+  std::string tagline;
+  std::string description;
+  std::bitset<4> position;
+  bool barrage{false};
+  bool team{false};
+  int energyCost{0};
+  bool token{false};
+  int tokenCost{2};
+  int damage{0};
+  int copies{1};
+  int repeat{0};
+  bool exhaust;
+  std::string tokenType;
+  std::list<Effect> EffectList;
 };
 
 //! The struct to be used in enemy intentions
@@ -119,10 +85,10 @@ struct EnemyCard {
 
 //! used by Enemies to attack and is shown to the player ahead of time
 struct Intention {
-    EnemyCard Type;
-    bool hasPosition{true};
-    std::bitset<4> position;
-    bool barrage{false};
+  EnemyCard Type;
+  bool hasPosition{true};
+  std::bitset<4> position;
+  bool barrage{false};
 };
 
 /*************************************************************//**
@@ -136,51 +102,79 @@ struct Intention {
 *
 * ***************************************************************/
 class Catalog {
-    public:
-        /*********************************//**
-        * fetch and return cards by cardID
-        *
-        * This function first searches cards 
-        * already in memory, then creates it 
-        * from the database if it does not. 
-        *
-        * @param cardID The ID to search for 
-        * and create if not found.
-        *
-        * @return A pointer to the card with 
-        * the matching cardID. Returns 
-        * nullptr when the card with cardID 
-        * is not found.
-        * ***********************************/
-        Card* getCardByID(const std::string&);
-        int getCopiesByID(const std::string&);
-        void clearUnused(Party*);
-        void clearUnused(const Player*);
-        bool isCached(const std::string&);
-        Catalog();
-        ~Catalog();
-    private:
-        Card* searchForID(const std::string&) const;
-        int searchForCopies(const std::string&) const;
-        std::list<std::string> searchForPlayerCards
-                    (const std::string&) const;
-        std::list<std::string> searchForAllCards() const;
-        Card* createCard(const std::string&);
-        std::map<std::string, Card*> cardMap;
-        void openDB();
-        void closeDB();
-        sqlite3* db;
-    friend int intCallBack(void *, int, char **, char **);
-    friend int cardCallback(void *, int, char **, char **);
-    friend int cardMapCallback(void *, int, char**, char**);
-    friend int stringListCallback(void *, 
-                                  int, 
-                                  char **, 
-                                  char **);
-    friend int effectListCallback(void *, 
-                                  int, 
-                                  char **, 
-                                  char **);
+public:
+  /*********************************//**
+  * fetch and return cards by cardID
+  *
+  * This function first searches cards
+  * already in memory, then creates it
+  * from the database if it does not.
+  *
+  * @param cardID The ID to search for
+  * and create if not found.
+  *
+  * @return A pointer to the card with
+  * the matching cardID. Returns
+  * nullptr when the card with cardID
+  * is not found.
+  * ***********************************/
+  Card *getCardByID(const std::string &);
+
+  /*********************************//**
+  * Returns amout of times a certian
+  * card appears.
+  *
+  * This function searches the cardmap 
+  * for the card, and then returns its 
+  * copies field.  If the card has 
+  * not been created, then it searches
+  * the SQLite database, and returns 
+  * the amount of copies a card has 
+  * as an integer.
+  *
+  * @param cardID The ID of the card to
+  * fetch the amount of copies of.
+  *
+  * @return The amount of copies a card
+  * has.
+  * ***********************************/
+  int getCopiesByID(const std::string &);
+  
+  /*********************//**
+  * Deletes any Cards not 
+  * being used by the Party.
+  *
+  * Searches through the 
+  * decks of all players in 
+  * the Party, and deletes 
+  * cached cards no longer 
+  * being used by them.
+  *
+  * @param playerClear a 
+  * pointer to the Party of 
+  * Players to be clearing.
+  * ***********************/
+  void clearUnused(Party *);
+  void clearUnused(const Player *);
+  bool isCached(const std::string &);
+  Catalog();
+  ~Catalog();
+
+private:
+  Card *searchForID(const std::string &) const;
+  int searchForCopies(const std::string &) const;
+  std::list<std::string> searchForPlayerCards(const std::string &) const;
+  std::list<std::string> searchForAllCards() const;
+  Card *createCard(const std::string &);
+  std::map<std::string, Card *> cardMap;
+  void openDB();
+  void closeDB();
+  sqlite3 *db;
+  friend int intCallBack(void *, int, char **, char **);
+  friend int cardCallback(void *, int, char **, char **);
+  friend int cardMapCallback(void *, int, char **, char **);
+  friend int stringListCallback(void *, int, char **, char **);
+  friend int effectListCallback(void *, int, char **, char **);
 };
 
 #endif

@@ -216,17 +216,15 @@ void Catalog::clearUnused(Party* partyClear) {
 
 void Catalog::clearUnused(const Player* playerClear) {
     std::map<std::string, int> inUse = playerClear->getDeckContents();
-    std::list<std::string> totalPlayerCards = searchForPlayerCards
-                (playerClear->getID());
-    for (std::string e : totalPlayerCards) {
-        std::map<std::string, int>::iterator it = inUse.find(e);
-        if (it == inUse.end()) {
-            std::map<std::string, Card*>::iterator 
-                jt = cardMap.find(e);
-            if (jt != cardMap.end()) {
-                delete jt->second;
-                cardMap.erase(jt);
-            }
+    std::map<std::string, Card*>::iterator it = cardMap.begin();
+    std::map<std::string, Card*>::iterator end = cardMap.end();
+    while (it != end) {
+        std::map<std::string, int>::iterator jt = inUse.find(it->first);
+        if (jt == inUse.end()) {
+            delete it->second;
+            it = cardMap.erase(it);
+        } else {
+            ++it;
         }
     }
 }
@@ -252,10 +250,8 @@ void Catalog::openDB() {
     //     }
     // }
     #ifdef _WIN32
-    std::string FUCKWINDOWS = filename.string();
-    const char * filepathCStringBecauseWindowsIsAnOperatingSystem = FUCKWINDOWS.c_str();
-    int rc = sqlite3_open(filepathCStringBecauseWindowsIsAnOperatingSystem, 
-                          &db);
+    std::string filenameString = filename.string();
+    int rc = sqlite3_open(filenameString.c_str(), &db);
     #else 
     int rc = sqlite3_open(filename.c_str(), &db);
     #endif
