@@ -1,4 +1,4 @@
-# Gdungeon {#Gdungeon}
+# Gdungeon \{#Gdungeon\}
 
 Gdungeon is a test simulation of the Gangster Dungeon TTRPG system
 
