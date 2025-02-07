@@ -16,6 +16,7 @@ add_library(testCommon SHARED
         ${PROJECT_SOURCE_DIR}/classes.cpp
         ${PROJECT_SOURCE_DIR}/arena.cpp
 )
+add_dependencies(testCommon link_target)
 target_include_directories(testCommon PRIVATE 
         ${PROJECT_INCLUDE_DIR}
         ${sqlite_SOURCE_DIR}
