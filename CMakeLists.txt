@@ -42,6 +42,7 @@ if (DOXYGEN_FOUND)
   set(DOXYGEN_GENERATE_XML YES)
   set(DOXYGEN_GENERATE_HTML NO)
   set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${THIS_HOME_DIR}/README.md")
+  set(DOXYGEN_EXCLUDE_PATTERNS "*/build/*\\\n*/debug/*\\\n*/_deps/*\\\n*.py")
   doxygen_add_docs(docs
     ${THIS_HOME_DIR}
     COMMENT "Generate ${PROJECT_NAME} documentation"
