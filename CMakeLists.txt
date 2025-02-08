@@ -37,12 +37,19 @@ if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
   option(BUILD_DOC "Build Documentation" ON)
 endif()
 
+set(DOXYGEN_OUTPUT_DIRECTORY "${THIS_HOME_DIR}/docs")
 find_package(Doxygen)
 if (DOXYGEN_FOUND)
   set(DOXYGEN_GENERATE_XML YES)
   set(DOXYGEN_GENERATE_HTML NO)
   set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${THIS_HOME_DIR}/README.md")
-  doxygen_add_docs(docs
+  set(DOXYGEN_EXCLUDE_PATTERNS */build/*
+*/debug/*
+*/_deps/*
+*.py
+*/docs/*)
+
+  doxygen_add_docs(doxygen_docs
     ${THIS_HOME_DIR}
     COMMENT "Generate ${PROJECT_NAME} documentation"
   )

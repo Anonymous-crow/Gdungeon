@@ -60,22 +60,22 @@ public:
         tokenCost(newTokenCost), tokenType(newTokenType), damage(newDamage),
         copies(newCopies), repeat(newRepeat), exhaust(newExhaust),
         EffectList(newEffectList) {};
-  std::string name;
-  std::string cardID;
-  std::string tagline;
-  std::string description;
-  std::bitset<4> position;
-  bool barrage{false};
-  bool team{false};
-  int energyCost{0};
-  bool token{false};
-  int tokenCost{2};
-  int damage{0};
-  int copies{1};
-  int repeat{0};
-  bool exhaust;
-  std::string tokenType;
-  std::list<Effect> EffectList;
+  std::string name;             //!< Name of the Card.
+  std::string cardID;           //!< Unique Identifier for the Card, usually also has player information
+  std::string tagline;          //!< Tagline to be shown on the card face.
+  std::string description;      //!< The description to be shown on the card face for the user
+  std::bitset<4> position;      //!< Which position can be affected by this Card.
+  bool barrage{false};          //!< Does this affect all positions denoted by position
+  bool team{false};             //!< Does this affect the Player team
+  int energyCost{0};            //!< The amount of energy the Card costs to play.
+  bool token{false};            //!< Does this Card require a token other than energy to play.
+  int tokenCost{2};             //!< How many additional tokens does this cost to play
+  int damage{0};                //!< How much damage does this Card deal
+  int copies{1};                //!< Maximum allowed copies of this Card
+  int repeat{0};                //!< How many times this Card repeats its effects in a turn
+  bool exhaust;                 //!< Does this Card delete iteslf after being played
+  std::string tokenType;        //!< Which token is used to play this Card
+  std::list<Effect> EffectList; //!< A list of Effect structs that will be put into effect when the card is played
 };
 
 //! The struct to be used in enemy intentions
@@ -141,8 +141,9 @@ public:
   int getCopiesByID(const std::string &);
   
   /*********************//**
-  * Deletes any Cards not 
-  * being used by the Party.
+  * Removes any Cards not 
+  * being used by the Party 
+  * from cache.
   *
   * Searches through the 
   * decks of all players in 
@@ -150,12 +151,30 @@ public:
   * cached cards no longer 
   * being used by them.
   *
-  * @param playerClear a 
-  * pointer to the Party of 
-  * Players to be clearing.
+  * @param partyClear A 
+  * pointer to the Party 
+  * of Players to be 
+  * cleared.
   * ***********************/
   void clearUnused(Party *);
+
+  /****************************//**
+  * Removes any Cards not being 
+  * used by the Party from cache.
+  * 
+  * @param playerClear A pointer 
+  * to the player that will have 
+  * its unused cards removed from 
+  * cache.
+  ********************************/
   void clearUnused(const Player *);
+
+  /******************************//**
+  * Check if a card has been cached
+  * 
+  * @param cardID The cardID of the 
+  * card to be searched for in cache
+  **********************************/
   bool isCached(const std::string &);
   Catalog();
   ~Catalog();
