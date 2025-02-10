@@ -28,11 +28,12 @@ enum EffectType {
   STUN,
 };
 
+//! Represents Card effects
 struct Effect {
   Effect(EffectType newType, int newStack) : name(newType), stack(newStack) {}
 
-  EffectType name;
-  int stack;
+  EffectType name; //!< effect type
+  int stack; //!< amount of effects on this Card
 };
 
 //! This will be used to represent Player cards
@@ -92,7 +93,7 @@ struct Intention {
 };
 
 /*************************************************************//**
-* Used to fetch cards from an SQLite database.
+* \brief Used to fetch cards from an SQLite database.
 *
 * The Catalog class uses cardIDs in order to fetch cards from the 
 * sqlite database, and store pointers to them in a map, so they 
@@ -104,7 +105,8 @@ struct Intention {
 class Catalog {
 public:
   /*********************************//**
-  * fetch and return cards by cardID
+  * \brief fetch and return Cards by 
+  *        cardID
   *
   * This function first searches cards
   * already in memory, then creates it
@@ -113,7 +115,7 @@ public:
   * @param cardID The ID to search for
   * and create if not found.
   *
-  * @return A pointer to the card with
+  * @return A pointer to the Card with
   * the matching cardID. Returns
   * nullptr when the card with cardID
   * is not found.
@@ -121,8 +123,8 @@ public:
   Card *getCardByID(const std::string &);
 
   /*********************************//**
-  * Returns amout of times a certian
-  * card appears.
+  * \brief Returns amout of times a 
+  *        certian Card appears.
   *
   * This function searches the cardmap 
   * for the card, and then returns its 
@@ -132,23 +134,23 @@ public:
   * the amount of copies a card has 
   * as an integer.
   *
-  * @param cardID The ID of the card to
+  * @param cardID The ID of the Card to
   * fetch the amount of copies of.
   *
-  * @return The amount of copies a card
+  * @return The amount of copies a Card
   * has.
   * ***********************************/
   int getCopiesByID(const std::string &);
   
   /*********************//**
-  * Removes any Cards not 
-  * being used by the Party 
-  * from cache.
+  * \brief Removes any Cards 
+  * not being used by the 
+  * Party from cache.
   *
   * Searches through the 
   * decks of all players in 
   * the Party, and deletes 
-  * cached cards no longer 
+  * cached Cards no longer 
   * being used by them.
   *
   * @param partyClear A 
@@ -159,21 +161,23 @@ public:
   void clearUnused(Party *);
 
   /****************************//**
-  * Removes any Cards not being 
-  * used by the Party from cache.
+  * \brief Removes any Cards not 
+  * being used by the Party from 
+  * cache.
   * 
   * @param playerClear A pointer 
   * to the player that will have 
-  * its unused cards removed from 
+  * its unused Cards removed from 
   * cache.
   ********************************/
   void clearUnused(const Player *);
 
   /******************************//**
-  * Check if a card has been cached
+  * \brief Check if a card has been 
+  * cached.
   * 
   * @param cardID The cardID of the 
-  * card to be searched for in cache
+  * Card to be searched for in cache
   **********************************/
   bool isCached(const std::string &);
   Catalog();

@@ -11,7 +11,9 @@ class TransferDB():
                  ) -> None:
         if output_file == None:
             self.output = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "assets", "cards.db")
+                os.path.dirname(os.path.abspath(__file__)), 
+                                "assets", 
+                                "cards.db")
         else:
             self.output = output_file
         self.con = sqlite3.connect(self.output)
@@ -41,7 +43,8 @@ CREATE TABLE IF NOT EXISTS "playerCards" (
 	PRIMARY KEY("cardID")
 )
 ''')
-        self.data.execute("CREATE UNIQUE INDEX IF NOT EXISTS idsort ON \"playerCards\" (\"cardID\"	ASC)")
+        self.data.execute("CREATE UNIQUE INDEX IF NOT EXISTS \
+idsort ON \"playerCards\" (\"cardID\"	ASC)")
         self.data.execute('''
 CREATE TABLE IF NOT EXISTS "cardEffects" (
 	"cardID"	TEXT NOT NULL UNIQUE,
@@ -151,13 +154,25 @@ CREATE TABLE IF NOT EXISTS "cardEffects" (
         
 @click.group(invoke_without_command=True)
 @click.pass_context
-@click.argument("input", default="Cards - data.csv")
-@click.option('-o', '--output', default=None)
-@click.option('-e', '--effect-table', is_flag=True)
+@click.argument("input", default="Cards - data.csv",
+                type=click.Path())
+@click.option('-o', '--output', default=None, 
+              help=" ".join("Specify a location to save the database to.\
+              The default is './assets/cards.db'.".split()))
+@click.option('-e', '--effect-table', is_flag=True,
+              help=" ".join("a flag that creates a Card Effect \
+              table in the database instead of the usual Cards \
+              table.  This requires a different CSV than the \
+              Cards table.".split()))
 def cli(ctx,
         input : str,
         output : str | None,
         effect_table : bool) -> None:
+    """Turn a CSV full of Gangster Dungeon Cards into a \
+SQLite Database of Gangster Dungeon Cards.
+
+INPUT is the path to the CSV.
+    """
     ctx.obj = TransferDB(output_file=output)
     ctx.show_default = True
     if (effect_table):

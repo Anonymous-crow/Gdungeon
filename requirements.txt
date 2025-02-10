@@ -1,3 +1,6 @@
-sphynx
+sphinx
 breathe
 click
+furo
+sphinx-click
+

@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.10.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-project(Gdungeon VERSION 0.0.1 LANGUAGES C CXX)
+project(Gdungeon VERSION 0.0.1 LANGUAGES CXX)
+set(PROJECT_AUTHOR "Jake Nellesen and Jonathan Binns")
 
 set(THIS_HOME_DIR ${PROJECT_SOURCE_DIR})
 
@@ -10,6 +11,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY $<1:${THIS_HOME_DIR}/bin>)
 
 set(PROJECT_SOURCE_DIR "${THIS_HOME_DIR}/src")
 set(PROJECT_INCLUDE_DIR "${THIS_HOME_DIR}/include")
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${THIS_HOME_DIR}/cmake)
 
 set(CMAKE_DEBUG_POSTFIX d)
 
@@ -33,26 +36,49 @@ else()
   find_package(SQLite3 REQUIRED)
 endif()
 
-if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
+if(CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
   option(BUILD_DOC "Build Documentation" ON)
+else()
+  option(BUILD_DOC "Build Documentation" OFF)
 endif()
+option(DOXYGEN_HTML "Build doxygen html documentation" OFF)
+option(BUILD_SPHINX_DOC "Build Sphinx Documentation" ON)
 
-set(DOXYGEN_OUTPUT_DIRECTORY "${THIS_HOME_DIR}/docs")
-find_package(Doxygen)
-if (DOXYGEN_FOUND)
-  set(DOXYGEN_GENERATE_XML YES)
-  set(DOXYGEN_GENERATE_HTML NO)
-  set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${THIS_HOME_DIR}/README.md")
-  set(DOXYGEN_EXCLUDE_PATTERNS */build/*
-*/debug/*
-*/_deps/*
-*.py
-*/docs/*)
+if(BUILD_DOC)
+  set(DOCS_DIRECTORY ${THIS_HOME_DIR}/docs)
+  set(DOXYGEN_OUTPUT_DIRECTORY "${DOCS_DIRECTORY}")
 
-  doxygen_add_docs(doxygen_docs
-    ${THIS_HOME_DIR}
-    COMMENT "Generate ${PROJECT_NAME} documentation"
-  )
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
+
+    set(DOXYGEN_GENERATE_XML YES)
+    if(DOXYGEN_HTML)
+      set(DOXYGEN_GENERATE_HTML YES)
+    else()
+      set(DOXYGEN_GENERATE_HTML NO)
+    endif()
+
+    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${THIS_HOME_DIR}/README.md")
+    set(DOXYGEN_EXCLUDE_PATTERNS */build/*
+      */debug/*
+      */_deps/*
+      *.py
+      */docs/*
+    )
+
+    doxygen_add_docs(doxygen_docs
+      ${THIS_HOME_DIR}
+      COMMENT "Generate ${PROJECT_NAME} documentation"
+    )
+    set(DOXYGEN_XML_OUTPUT_DIRECTORY "${DOXYGEN_OUTPUT_DIRECTORY}/xml")
+    if(BUILD_SPHINX_DOC)
+      add_subdirectory("docs")
+    endif()
+  else()
+    message(ERROR
+      "Doxygen not found, could not build documentation"
+    )
+  endif()
 endif()
 
 if(PROJECT_IS_TOP_LEVEL)
@@ -69,8 +95,13 @@ add_executable(${PROJECT_NAME}
   ${PROJECT_SOURCE_DIR}/arena.cpp
 )
 
-set_target_properties(${PROJECT_NAME} PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX})
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "${PROJECT_NAME}-${CMAKE_GENERATOR}-${CMAKE_C_COMPILER_ID}")
+set_target_properties(${PROJECT_NAME}
+  PROPERTIES DEBUG_POSTFIX ${CMAKE_DEBUG_POSTFIX}
+)
+set_target_properties(${PROJECT_NAME}
+  PROPERTIES OUTPUT_NAME
+  "${PROJECT_NAME}-${CMAKE_GENERATOR}-${CMAKE_C_COMPILER_ID}"
+)
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE_DIR})
 
@@ -91,9 +122,10 @@ else()
 endif()
 
 add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                       ${THIS_HOME_DIR}/assets/cards.db
-                       ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${THIS_HOME_DIR}/assets/cards.db
+  ${EXECUTABLE_OUTPUT_PATH}/assets/cards.db
+  COMMENT "COPYING ASSETS"
 )
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
@@ -107,7 +139,7 @@ install(DIRECTORY assets/ DESTINATION assets/)
 option(CPACK_BINARY_TZ off)
 set(CPACK_RPM_PACKAGE_REQUIRES "sqlite3")
 
-set(CPACK_PACKAGE_VENDOR "ComradeCrow")
+set(CPACK_PACKAGE_VENDOR ${PROJECT_AUTHOR})
 set(CPACK_RESOURCE_FILE_LICENSE ${THIS_HOME_DIR}/LICENSE.txt)
 set(CPACK_RESOURCE_FILE_README ${THIS_HOME_DIR}/README.md)
 include(CPack)
