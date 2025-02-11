@@ -131,4 +131,5 @@ set_property(TEST removeCard
   PROPERTY PASS_REGULAR_EXPRESSION "${PASS_REGEX}"
 )
 
-
+add_custom_target(buildTests)
+add_dependencies(buildTests addCard removeCard addPartyMember removePartyMember)
