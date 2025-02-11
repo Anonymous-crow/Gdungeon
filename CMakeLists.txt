@@ -36,15 +36,12 @@ else()
   find_package(SQLite3 REQUIRED)
 endif()
 
-if(CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
-  option(BUILD_DOC "Build Documentation" ON)
-else()
-  option(BUILD_DOC "Build Documentation" OFF)
-endif()
+option(BUILD_DOCS "Build Documentation" OFF)
 option(DOXYGEN_HTML "Build doxygen html documentation" OFF)
-option(BUILD_SPHINX_DOC "Build Sphinx Documentation" ON)
+option(BUILD_SPHINX_DOCS "Build Sphinx Documentation" ON)
+option(SPHINX_PDF "Build a PDF of the Sphinx Documentation" OFF)
 
-if(BUILD_DOC)
+if(BUILD_DOCS)
   set(DOCS_DIRECTORY ${THIS_HOME_DIR}/docs)
   set(DOXYGEN_OUTPUT_DIRECTORY "${DOCS_DIRECTORY}")
 
@@ -71,7 +68,7 @@ if(BUILD_DOC)
       COMMENT "Generate ${PROJECT_NAME} documentation"
     )
     set(DOXYGEN_XML_OUTPUT_DIRECTORY "${DOXYGEN_OUTPUT_DIRECTORY}/xml")
-    if(BUILD_SPHINX_DOC)
+    if(BUILD_SPHINX_DOCS)
       add_subdirectory("docs")
     endif()
   else()
@@ -100,7 +97,7 @@ set_target_properties(${PROJECT_NAME}
 )
 set_target_properties(${PROJECT_NAME}
   PROPERTIES OUTPUT_NAME
-  "${PROJECT_NAME}-${CMAKE_GENERATOR}-${CMAKE_C_COMPILER_ID}"
+  "${PROJECT_NAME}-${CMAKE_GENERATOR}-${CMAKE_CXX_COMPILER_ID}"
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${PROJECT_INCLUDE_DIR})

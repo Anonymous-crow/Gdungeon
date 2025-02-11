@@ -6,6 +6,8 @@
 Gdungeon documentation
 ======================
 
+.. _apis:
+
 Class APIs
 ----------
 
@@ -14,6 +16,8 @@ Class APIs
 
    Card
    Player
+
+.. _utilities:
 
 Utilities
 ---------
