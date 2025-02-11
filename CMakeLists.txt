@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10.0)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-project(Gdungeon VERSION 0.0.1 LANGUAGES CXX)
+project(Gdungeon VERSION 0.0.1 LANGUAGES C CXX)
 set(PROJECT_AUTHOR "Jake Nellesen and Jonathan Binns")
 
 set(THIS_HOME_DIR ${PROJECT_SOURCE_DIR})
