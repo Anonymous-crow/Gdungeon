@@ -14,14 +14,23 @@ class Catalog;
 struct Card;
 struct Effect;
 
-
+/*************************************************************//**
+* \brief The Entity class is used to represent Players and Enimies
+* 
+* A small class that holds the hp, hpcap, and id of an Entity, 
+* and some simple functions to retrieve and set these variables.
+* 
+*****************************************************************/
 class Entity {
     public:
+        //! Default Constructor
         Entity() :  hp{5},
                     hpCap{5},
                     name{""},
                     id{""} {}
-
+        
+        /// @brief The standard Entity constructor. 
+        /// Sets an int hp, and strings name and id.
         Entity(int newHp, 
                const std::string& newName,
                const std::string& newID) :
@@ -30,12 +39,31 @@ class Entity {
                     name(newName),
                     id(newID) {}
         
-        std::string getName() const;
-        void setName(const std::string&);
-        std::string getID() const;
-        void setID(const std::string&);
+        /// @brief Returns the name of the Entity.
+        /// @return a string containing the name of the Entity.
+        inline std::string getName() const;
 
-        int getHp() const;
+        /// @brief Sets the name of the Entity.
+        /// @param newName A string containing 
+        /// the new name to be set.
+        inline void setName(const std::string& newName);
+
+        /// @brief Returns the ID of the Entity.
+        /// @return a string containing the ID of the Entity.
+        inline std::string getID() const;
+
+        /// @brief Sets the ID of the Entity
+        /// @param newID A string containing 
+        /// the new ID to be set.
+        inline void setID(const std::string&);
+        
+        /// @brief Returns the hp of an Entity.
+        /// @return An int containg the hp of the Entity.
+        inline int getHp() const;
+
+        /// @brief Returns the hpCap of an Entity.
+        /// @return An int containg the hpCap of the Entity.
+        inline int getHpCap() const;
         void damage(int);
         void heal(int);
     protected:

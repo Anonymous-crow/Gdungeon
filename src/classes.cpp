@@ -5,16 +5,28 @@
 #include <iostream>
 #include <sstream>
 
-std::string Entity::getName() const {
+inline std::string Entity::getName() const {
     return name;
 }
 
-std::string Entity::getID() const {
+inline std::string Entity::getID() const {
     return id;
 }
 
-int Entity::getHp() const {
+inline int Entity::getHp() const {
     return hp;
+}
+
+inline int Entity::getHpCap() const {
+    return hpCap;
+}
+
+inline void Entity::setName(const std::string& newName) {
+    name = newName;
+}
+
+inline void Entity::setID(const std::string& newID) {
+    name = newID;
 }
 
 void Entity::damage(int damageAmt) {
