@@ -22,9 +22,15 @@ configure_file(
   @ONLY
 )
 set(DOCS_DEPENDS "${SPHINX_BIN_DIR}/conf.py")
+option(SPHINX_DIRHTML "Use the Sphinx dirhtml Option" ON)
+if(SPHINX_DIRHTML)
+  set(_ISDIRHTML "dirhtml")
+else()
+  set(_ISDIRHTML "html")
+endif()
 add_custom_command(
   OUTPUT "${SPHINX_BUILD_DIR}/html/index.html"
-  COMMAND "${Sphinx_EXECUTABLE}" -b dirhtml -c "${SPHINX_BIN_DIR}"
+  COMMAND "${Sphinx_EXECUTABLE}" -b "${_ISDIRHTML}" -c "${SPHINX_BIN_DIR}"
     "${SPHINX_SOURCE_DIR}" "${SPHINX_BUILD_DIR}/html"
   COMMENT "Building Sphinx HTML"
 )

@@ -45,36 +45,30 @@ if(BUILD_DOCS)
   set(DOCS_DIRECTORY ${THIS_HOME_DIR}/docs)
   set(DOXYGEN_OUTPUT_DIRECTORY "${DOCS_DIRECTORY}")
 
-  find_package(Doxygen)
-  if(DOXYGEN_FOUND)
-
-    set(DOXYGEN_GENERATE_XML YES)
-    if(DOXYGEN_HTML)
-      set(DOXYGEN_GENERATE_HTML YES)
-    else()
-      set(DOXYGEN_GENERATE_HTML NO)
-    endif()
-
-    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${THIS_HOME_DIR}/README.md")
-    set(DOXYGEN_EXCLUDE_PATTERNS */build/*
-      */debug/*
-      */_deps/*
-      *.py
-      */docs/*
-    )
-
-    doxygen_add_docs(doxygen_docs
-      ${THIS_HOME_DIR}
-      COMMENT "Generate ${PROJECT_NAME} documentation"
-    )
-    set(DOXYGEN_XML_OUTPUT_DIRECTORY "${DOXYGEN_OUTPUT_DIRECTORY}/xml")
-    if(BUILD_SPHINX_DOCS)
-      add_subdirectory("docs")
-    endif()
+  find_package(Doxygen REQUIRED)
+  set(DOXYGEN_GENERATE_XML YES)
+  if(DOXYGEN_HTML)
+    set(DOXYGEN_GENERATE_HTML YES)
   else()
-    message(ERROR
-      "Doxygen not found, could not build documentation"
-    )
+    set(DOXYGEN_GENERATE_HTML NO)
+  endif()
+  set(DOXYGEN_HTML_COLORSTYLE "DARK")
+
+  set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${THIS_HOME_DIR}/README.md")
+  set(DOXYGEN_EXCLUDE_PATTERNS */build/*
+    */debug/*
+    */_deps/*
+    *.py
+    */docs/*
+  )
+
+  doxygen_add_docs(doxygen_docs
+    ${THIS_HOME_DIR}
+    COMMENT "Generate ${PROJECT_NAME} documentation"
+  )
+  set(DOXYGEN_XML_OUTPUT_DIRECTORY "${DOXYGEN_OUTPUT_DIRECTORY}/xml")
+  if(BUILD_SPHINX_DOCS)
+    add_subdirectory("docs")
   endif()
 endif()
 
