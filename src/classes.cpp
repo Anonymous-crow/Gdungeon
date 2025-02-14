@@ -5,11 +5,11 @@
 #include <iostream>
 #include <sstream>
 
-inline std::string Entity::getName() const {
+std::string Entity::getName() const {
     return name;
 }
 
-inline std::string Entity::getID() const {
+std::string Entity::getID() const {
     return id;
 }
 

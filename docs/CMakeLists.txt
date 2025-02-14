@@ -2,6 +2,7 @@ find_package(Sphinx REQUIRED)
 
 find_package(Furo)
 find_package(Breathe REQUIRED)
+find_package(SphinxClick REQUIRED)
 
 set(SPHINX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/source")
 set(SPHINX_BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build")

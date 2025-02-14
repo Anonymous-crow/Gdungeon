@@ -27,7 +27,7 @@ class Entity {
         Entity() :  hp{5},
                     hpCap{5},
                     name{""},
-                    id{""} {}
+                    id{""} {};
         
         /// @brief The standard Entity constructor. 
         /// Sets an int hp, and strings name and id.
@@ -37,11 +37,11 @@ class Entity {
                     hp(newHp),
                     hpCap(newHp),
                     name(newName),
-                    id(newID) {}
+                    id(newID) {};
         
         /// @brief Returns the name of the Entity.
         /// @return a string containing the name of the Entity.
-        inline std::string getName() const;
+        std::string getName() const;
 
         /// @brief Sets the name of the Entity.
         /// @param newName A string containing 
@@ -50,7 +50,7 @@ class Entity {
 
         /// @brief Returns the ID of the Entity.
         /// @return a string containing the ID of the Entity.
-        inline std::string getID() const;
+        std::string getID() const;
 
         /// @brief Sets the ID of the Entity
         /// @param newID A string containing 
@@ -64,8 +64,14 @@ class Entity {
         /// @brief Returns the hpCap of an Entity.
         /// @return An int containg the hpCap of the Entity.
         inline int getHpCap() const;
-        void damage(int);
-        void heal(int);
+
+        /// @brief Reduce Entity's HP
+        /// @param damageAmt amount of damage to reduce HP by.
+        void damage(int damageAmt);
+
+        /// @brief increase Entity's HP
+        /// @param damageAmt amount of damage to increase HP by.
+        void heal(int healAmt);
     protected:
         std::string name;
         std::string id;
@@ -73,7 +79,13 @@ class Entity {
         int hpCap;
 };
 
-
+/*************************************************************//**
+* \brief The class that will represent and be controlled by the 
+* player.
+* 
+* This class inherits Entity and adds some player specific 
+* aspects.
+*****************************************************************/
 class Player : public Entity {
     public:
         Player(Catalog* newCardCatalogPtr) 
@@ -93,6 +105,8 @@ class Player : public Entity {
                             Entity(newHp, newName, newID)
                             {}
 
+        /// @brief Returns the Players Energy
+        /// @return int representing players Energy
         int getEnergy() const;
         int getHandSize() const;
         int getDeckSize() const;
