@@ -105,17 +105,41 @@ class Player : public Entity {
                             Entity(newHp, newName, newID)
                             {}
 
-        /// @brief Returns the Players Energy
-        /// @return int representing players Energy
+        /// @brief Get the Players Energy.
+        /// @return int representing Players Energy.
         int getEnergy() const;
+
+        /// @brief Get the Players hand size.
+        /// @return int representing Players hand size.
         int getHandSize() const;
+
+        /// @brief Get the Players deck size.
+        /// @return int representing players deck size.
         int getDeckSize() const;
         std::string getDeckString() const;
+
+        /// @brief Get the contents of the Players deck.
+        /// @return std::map contining a series of cardIDs
+        /// representing the Cards in the Players deck, and 
+        /// a value of an int representing the amount of
+        /// that Card in the Players deck.
         std::map<std::string, int> getDeckContents() const;
-        
-        void addCardToDeck(Card*);
-        void addCardToDeck(const std::string&, int = 1);
-        void removeCardFromDeck(const std::string&, int = 1);
+
+        /// @brief Adds the Card being pointed to to the Players
+        /// deck.
+        /// @param newCard Card pointer to be added to the Players deck.
+        void addCardToDeck(Card* newCard);
+
+        /// @brief Adds specified Card to the Players deck
+        /// @param cardID ID of the Card to be added
+        /// @param copies Number of times the Card should 
+        /// be added to the deck.  Defaults to 1.
+        void addCardToDeck(const std::string& cardID, int copies = 1);
+
+        /// @brief Removes the specified card from the Players deck.
+        /// @param cardID ID of the Card to remove.
+        /// @param toRemove number of copies of this card to remove.
+        void removeCardFromDeck(const std::string& cardID, int toRemove = 1);
 
         ~Player();
 
@@ -129,7 +153,14 @@ class Player : public Entity {
         Catalog* cardCatalogPtr{nullptr};
 };
 
-
+/**********************************************//**
+* \brief Not currently implemented.
+* 
+* This class represents Enemies to be fought by the
+* Player.  They will use EnemyCards and 
+* EnemyIntentions to signal to the player thier 
+* next move.
+* ************************************************/
 class Enemy : public Entity {
 
 };

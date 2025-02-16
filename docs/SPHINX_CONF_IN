@@ -42,6 +42,7 @@ exclude_patterns = []
 
 html_theme = "@SPHINX_HTML_THEME@"
 html_static_path = ["@SPHINX_STATIC_PATH@"]
+html_css_files = ["breathe.css"]
 
 latex_elements = {
   'extraclassoptions': 'openany,oneside'
