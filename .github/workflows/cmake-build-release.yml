@@ -5,6 +5,7 @@ on:
     tags:
       - "v*.*.*"
       - "rc*"
+    branches: ["main"]
 
 jobs:
   build:
@@ -43,7 +44,7 @@ jobs:
           packages: sqlite3 libsqlite3 libsqlite3-dev
           version: 4.0
           # execute_install_scripts: true
-
+        
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
@@ -97,3 +98,73 @@ jobs:
           prerelease: true
           files: |
             package/Gdungeon-*.*.*
+
+  build-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set reusable strings
+        # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
+        id: strings
+        shell: bash
+        run: |
+          echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+      - name: install sqlite3
+        uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: sqlite3 libsqlite3 libsqlite3-dev
+          version: 4.0
+          # execute_install_scripts: true
+      
+      - name: Cache Docs Deps
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: 'pip' # caching pip dependencies
+
+      - name: Add Docs Deps
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: pip install -r requirements.txt
+
+      - name: Configure CMake
+        run: >
+          cmake -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
+          -DCMAKE_BUILD_TYPE=Release
+          -DBUILD_DOCS=ON
+          -S ${{ github.workspace }}
+
+      - name: Build Docs
+        run: >
+          cmake --build ${{ steps.strings.outputs.build-output-dir }} 
+          --config Release --target docs
+
+      - name: Move Docs
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./docs/build/html
+
+  deploy-docs:
+    # Add a dependency to the build job
+    needs: build-docs
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+
+    # Deploy to the github-pages environment
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    # Specify runner + deployment step
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 # or specific "vX.X.X" version tag for this action

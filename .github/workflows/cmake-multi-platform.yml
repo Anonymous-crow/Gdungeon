@@ -4,11 +4,11 @@ name: CMake on multiple platforms
 
 on:
   push:
-    branches: ["main"]
     tags-ignore:
       - "v*.*.*"
       - "rc*"
       - "nobuild*"
+    branches: ["main"]
   pull_request:
     branches: ["main"]
 

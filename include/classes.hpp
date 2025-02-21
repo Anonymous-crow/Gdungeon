@@ -166,6 +166,8 @@ class Enemy : public Entity {
 };
 
 
+//! An iterator for moving through party classes.
+//! Points to a pointer of the provided class.
 template<class T>
 struct ptrIterator {
     using iterator_category 
@@ -239,13 +241,20 @@ struct ptrIterator {
         };
 
         friend class Party;
+        friend class EnemyParty;
 
 
     private:
         pointer m_ptr;
 };
 
-
+/**********************************************//**
+* \brief A class for holding positions and Player
+* classes.
+* 
+* A class for holding up to 4 pointers to Player
+* objects.  
+* ************************************************/
 class Party : ptrIterator<Player>{
     public:
         using iterator = ptrIterator<Player>;
@@ -253,29 +262,80 @@ class Party : ptrIterator<Player>{
         Party(Catalog* newCardCatalogPtr) 
             :    cardCatalogPtr(newCardCatalogPtr) {};
         ~Party();
-        void addMember(Player*);
-        void addMember(int, 
-                       const std::string&, 
-                       const std::string&);
+
+        /// @brief Adds a Player to the Party.
+        /// @param newPlayer Pointer to the player to
+        /// be added.
+        void addMember(Player* newPlayer);
+
+        /// @brief Adds a Player to the Party.
+        /// @param newHp hp of the Player to be added.
+        /// @param newName name of the Player to be added.
+        /// @param newID ID of the Player to be added.
+        void addMember(int newHp, 
+                       const std::string& newName, 
+                       const std::string& newID);
+
+        /// @brief Returns the amount of Players in the Party.
+        /// @return size_t representing the amount of Players in the Party.
         size_t size() const;
-        Player* const operator[](size_t) const;
+
+        /// @brief [] operator for the party.
+        /// @param index index of the player to be fetch.
+        /// @return pointer pointing to the specified Player.
+        Player* const operator[](size_t index) const;
+
+        /// @brief Prints the players and cards in the party.
+        /// @return A String meant for printing.
         std::string print();
 
+        /// @brief similar to std::begin.
+        /// @return an interator pointing to the 
+        /// first element of the Party.
         iterator begin();
+
+        /// @brief similar to std::end.
+        /// @return an interator pointing to the 
+        /// space after the last element of the Party.
         iterator end();
 
-        inline void swap(iterator&, 
-                         iterator&);
+        /// @brief Similar to std::swap.
+        /// @param a Element to be swapped with b.
+        /// @param b Element to be swapped wtih a.
+        inline void swap(iterator& a, 
+                         iterator& b);
 
-        
-        iterator erase(iterator);
-        iterator erase(iterator, 
-                       iterator);
-        iterator remove(const std::string&, int = 1);
-        iterator remove(iterator, 
-                        iterator, 
-                        const std::string&,
-                        int = 1);
+        /// @brief Erase the element pointed to by it.
+        /// @param it Iterater pointing to element to be erased.
+        /// @return Iterator pointing to the element after the
+        /// erased  element.
+        iterator erase(iterator it);
+
+        /// @brief Erase elements between specified iterators.
+        /// @param itStart First element to be erased.
+        /// @param itEnd Last element to be erased.
+        /// @return Iterator pointing to the element after the
+        /// erased  elements.
+        iterator erase(iterator itStart, 
+                       iterator itEnd);
+
+        /// @brief remove Card with the specified cardID from the deck.
+        /// @param id cardID representing Card to be removed.
+        /// @param limit Amount of Cards with specified cardID to be removed.
+        /// @return iterator pointing to last element not removed.
+        iterator remove(const std::string& id, int limit = 1);
+
+        /// @brief remove Card with the specified cardID from the deck.
+        /// Removes from the specified range.
+        /// @param itb Start of the range to search and remove through.
+        /// @param ite End of the range to search and remove through.
+        /// @param id cardID representing Card to be removed.
+        /// @param limit Amount of Cards with specified cardID to be removed.
+        /// @return iterator pointing to last element not removed.
+        iterator remove(iterator itb, 
+                        iterator ite, 
+                        const std::string& id,
+                        int limit = 1);
 
     private:
         Player* partyList[4] {nullptr, 
