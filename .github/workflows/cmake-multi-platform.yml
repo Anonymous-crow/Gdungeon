@@ -13,7 +13,7 @@ on:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/master'
+    if: !contains(fromJSON(' [\"refs/tags/v*.*.*\", \"refs/tags/rc*\", \"refs/tags/nobuild*\"] '), github.ref)
     runs-on: ${{ matrix.os }}
 
     strategy:
