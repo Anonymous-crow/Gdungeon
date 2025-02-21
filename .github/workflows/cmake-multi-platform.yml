@@ -13,7 +13,8 @@ on:
 
 jobs:
   build:
-    if: !contains(fromJSON(' [\"refs/tags/v*.*.*\", \"refs/tags/rc*\", \"refs/tags/nobuild*\"] '), github.ref)
+    if: ! contains(fromJSON(' ["refs/tags/v*.*.*", "refs/tags/rc*", "refs/tags/nobuild*"] '), github.ref)
+    
     runs-on: ${{ matrix.os }}
 
     strategy:
