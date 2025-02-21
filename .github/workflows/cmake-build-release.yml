@@ -120,14 +120,12 @@ jobs:
           # execute_install_scripts: true
       
       - name: Cache Docs Deps
-        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
           cache: 'pip' # caching pip dependencies
 
       - name: Add Docs Deps
-        if: startsWith(github.ref, 'refs/tags/v')
         run: pip install -r requirements.txt
 
       - name: Configure CMake
@@ -147,7 +145,7 @@ jobs:
       - name: Move Docs
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./docs/build/html
+          path: ${{ github.workspace }}/docs/build/html
 
   deploy-docs:
     if: github.ref == 'refs/heads/master'
