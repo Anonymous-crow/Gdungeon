@@ -7,12 +7,22 @@
 #include <random>
 #include <iterator>
 #include <cstddef>
+#include <cstdint>
 
 #include <catalog.hpp>
+
+#define MELEE 1
+#define RANGED 2
+#define SUMMONER 4
+#define SUPPORT 8
+
 
 class Catalog;
 struct Card;
 struct Effect;
+struct Intention;
+struct EnemyCard;
+
 
 /*************************************************************//**
 * \brief The Entity class is used to represent Players and Enimies
@@ -154,7 +164,7 @@ class Player : public Entity {
 };
 
 /**********************************************//**
-* \brief Not currently implemented.
+* \brief Represents the enemies.
 * 
 * This class represents Enemies to be fought by the
 * Player.  They will use EnemyCards and 
@@ -162,7 +172,22 @@ class Player : public Entity {
 * next move.
 * ************************************************/
 class Enemy : public Entity {
+    public:
+        Enemy(int newHp,
+              const std::string& newName,
+              const std::string& newID, 
+              Catalog* newCardCatalogPtr) :
+            Entity(newHp, newName, newID)
+            {}
 
+        size_t getIntentSize() const;
+        void addIntent(Card* newIntent);
+        void addIntent(const std::string& intentID, 
+                       int copies = 1);
+    private:
+        std::uint8_t rangeType;
+        std::vector<std::string> passives;
+        std::list<Intention*> intentQueue;
 };
 
 

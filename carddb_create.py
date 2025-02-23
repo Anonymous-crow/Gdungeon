@@ -25,21 +25,21 @@ class TransferDB():
     def create_table(self) -> None:
         self.data.execute('''
 CREATE TABLE IF NOT EXISTS "playerCards" (
-	"name"	TEXT,
-	"cardID"	TEXT NOT NULL UNIQUE,
-	"tagline"	TEXT,
+	"name"	        TEXT,
+	"cardID"	    TEXT NOT NULL UNIQUE,
+	"tagline"	    TEXT,
 	"description"	TEXT,
-	"position"	TEXT,
-	"barrage"	BOOL NOT NULL CHECK("barrage" IN (0, 1)),
-	"team"	BOOL NOT NULL CHECK("team" IN (0, 1)),
+	"position"	    TEXT,
+	"barrage"	    BOOL NOT NULL CHECK("barrage" IN (0, 1)),
+	"team"	        BOOL NOT NULL CHECK("team" IN (0, 1)),
 	"energyCost"	INTEGER NOT NULL,
-	"token"	BOOL NOT NULL CHECK("token" IN (0, 1)),
-	"tokenCost"	INTEGER NOT NULL,
-	"tokenType"	TEXT,
-	"damage"	INTEGER NOT NULL,
-	"copies"	INTEGER NOT NULL,
-	"repeat"	INTEGER NOT NULL,
-	"exhaust"	BOOL NOT NULL CHECK(exhaust in (0,1)),
+	"token"	        BOOL NOT NULL CHECK("token" IN (0, 1)),
+	"tokenCost"	    INTEGER NOT NULL,
+	"tokenType"	    TEXT,
+	"damage"	    INTEGER NOT NULL,
+	"copies"	    INTEGER NOT NULL,
+	"repeat"	    INTEGER NOT NULL,
+	"exhaust"	    BOOL NOT NULL CHECK(exhaust in (0,1)),
 	PRIMARY KEY("cardID")
 )
 ''')
@@ -47,21 +47,58 @@ CREATE TABLE IF NOT EXISTS "playerCards" (
 idsort ON \"playerCards\" (\"cardID\"	ASC)")
         self.data.execute('''
 CREATE TABLE IF NOT EXISTS "cardEffects" (
-	"cardID"	TEXT NOT NULL UNIQUE,
-	"shield"	INTEGER,
-	"strength"	INTEGER,
-	"fortitude"	INTEGER,
-	"glint"	INTEGER,
-    "mark"	INTEGER,
-	"immunity"	INTEGER,
-    "restore"	INTEGER,
-    "clear"	INTEGER,
-	"taunt"	INTEGER,
-	"weak"	INTEGER,
+	"cardID"	    TEXT NOT NULL UNIQUE,
+	"shield"	    INTEGER,
+	"strength"	    INTEGER,
+	"fortitude"	    INTEGER,
+	"glint"	        INTEGER,
+    "mark"	        INTEGER,
+	"immunity"	    INTEGER,
+    "restore"	    INTEGER,
+    "clear"	        INTEGER,
+	"taunt"	        INTEGER,
+	"weak"	        INTEGER,
 	"vulnerable"	INTEGER,
-	"stun"	INTEGER,
+	"stun"	        INTEGER,
 	PRIMARY KEY("cardID"),
 	FOREIGN KEY("cardID") REFERENCES "playerCards"("cardID")
+)
+''')
+        self.data.execute('''
+CREATE TABLE IF NOT EXISTS "enimies" (
+	"name"	        TEXT,
+	"enemyID"	    TEXT NOT NULL UNIQUE,
+	"HP"	    INTEGER NOT NULL,
+    "size"	        INTEGER NOT NULL,
+    "range"	        INTEGER NOT NULL,
+	PRIMARY KEY("cardID")
+)
+''')
+        self.data.execute('''
+CREATE TABLE IF NOT EXISTS "enemyCard" (
+	"name"	        TEXT,
+	"cardID"	    TEXT NOT NULL UNIQUE,
+	"damage"	    INTEGER NOT NULL,
+	PRIMARY KEY("cardID")
+)
+''')
+        self.data.execute('''
+CREATE TABLE IF NOT EXISTS "enemyEffects" (
+	"cardID"	    TEXT NOT NULL UNIQUE,
+	"shield"	    INTEGER,
+	"strength"	    INTEGER,
+	"fortitude"	    INTEGER,
+	"glint"	        INTEGER,
+    "mark"	        INTEGER,
+	"immunity"	    INTEGER,
+    "restore"	    INTEGER,
+    "clear"	        INTEGER,
+	"taunt"	        INTEGER,
+	"weak"	        INTEGER,
+	"vulnerable"	INTEGER,
+	"stun"	        INTEGER,
+	PRIMARY KEY("cardID"),
+	FOREIGN KEY("cardID") REFERENCES "enemyCard"("cardID")
 )
 ''')
 

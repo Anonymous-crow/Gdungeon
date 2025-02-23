@@ -13,6 +13,7 @@
 class Player;
 class Party;
 
+
 enum EffectType {
   SHIELD = 1,
   STRENGTH,
@@ -81,11 +82,13 @@ public:
 
 //! The struct to be used in enemy intentions
 struct EnemyCard {
+  std::string cardID;
   // TODO implement enemy cards
 };
 
 //! used by Enemies to attack and is shown to the player ahead of time
 struct Intention {
+  std::string intentID;
   EnemyCard Type;
   bool hasPosition{true};
   std::bitset<4> position;
@@ -121,6 +124,34 @@ public:
   * is not found.
   * ***********************************/
   Card *getCardByID(const std::string &);
+
+  /*********************************//**
+  * @brief Fetch and return an EnemyCard
+  * pointer.
+  * 
+  * Fetches the flavortext, damage, and 
+  * effects for an intent.
+  * 
+  * @return a pointer to an EnemyCard
+  * with the matching cardID.  Returns
+  * a nullptr when no matching EnemyCard
+  * is found.
+  * ***********************************/
+  EnemyCard *getEnemyCard(const std::string& cardID);
+
+  /*********************************//**
+  * @brief Fetch and return an Intention
+  * pointer.
+  * 
+  * Returns an intention with a matching
+  * card type.
+  * 
+  * @return a pointer to an Intention
+  * with the matching intentID.  Returns
+  * a nullptr when no matching Intention
+  * is found.
+  * ***********************************/
+  Intention *getIntention(const std::string& intentID);
 
   /*********************************//**
   * \brief Returns amout of times a 

@@ -23,7 +23,6 @@ class Arena {
         std::queue<EnemyParty*> partyQueue;
         Party* playerParty{nullptr};
         EnemyParty* oppParty{nullptr};
-        EntityParty* dummyParty{nullptr};
 };
 
 #endif
