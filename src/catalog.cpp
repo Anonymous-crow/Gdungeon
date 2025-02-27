@@ -89,11 +89,12 @@ int cardMapCallback(void *catalogObj,
     return 0;
 }
 
+template <class T>
 int cardCallback(void *cardPtr, 
                  int, 
                  char **argv, 
                  char **) {
-  *reinterpret_cast<Card**>(cardPtr) = new Card(argv);
+  *reinterpret_cast<T**>(cardPtr) = new T(argv);
   return 0;
 }
 
@@ -129,7 +130,7 @@ Card* Catalog::createCard(const std::string& cardID) {
                     cardID.c_str());
     int rc = sqlite3_exec(db, 
                           sqlQuery,
-                          cardCallback, 
+                          cardCallback<Card>, 
                           reinterpret_cast<void*>(&responseCard), 
                           &errmsg);
 

@@ -216,6 +216,7 @@ CREATE TABLE IF NOT EXISTS "enemyEffects" (
     def import_enemy_cards(self, input_file : str) -> None:
         csvdata = self.read_csv(input_file)
         for i in csvdata:
+            i["token"] = i["token"] == "TRUE"
             self.data.execute("""INSERT OR REPLACE INTO "enemyCards" VALUES (
                 :NAME,
                 :CARDID,

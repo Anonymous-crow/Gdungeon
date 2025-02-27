@@ -82,8 +82,12 @@ public:
 
 //! The struct to be used in enemy intentions
 struct EnemyCard {
+  std::string name;
   std::string cardID;
-  // TODO implement enemy cards
+  int damage;
+  bool token;
+  std::string tokenType;
+  std::string tokenGain;
 };
 
 //! used by Enemies to attack and is shown to the player ahead of time
