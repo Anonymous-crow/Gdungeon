@@ -12,13 +12,14 @@ int main(int argLen, char** args){
 
     bool test1{false}, test2{false}, test3{false};
 
+    int copies = cardCatalog.getCopiesByID("rudy_Punch");
+
     party[0]->addCardToDeck("rudy_Punch");
     party[0]->addCardToDeck("rudy_Punch");
     party[0]->addCardToDeck("rudy_Punch");
     party[0]->addCardToDeck("rudy_Punch");
     party[0]->addCardToDeck("rudy_Punch");
     std::map<std::string, int> contents = party[0]->getDeckContents();
-    int copies = cardCatalog.getCopiesByID("rudy_Punch");
     copies = copies > 5 ? 5 : copies;
     int size = static_cast<int>(contents.size());
     if (size == 1 && 

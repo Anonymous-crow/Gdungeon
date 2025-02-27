@@ -131,5 +131,24 @@ set_property(TEST removeCard
   PROPERTY PASS_REGULAR_EXPRESSION "${PASS_REGEX}"
 )
 
+add_executable(addEnemyCard
+  tempAddEnemyCard.cpp
+)
+target_link_libraries(addEnemyCard PRIVATE
+  testCommon
+)
+target_include_directories(addEnemyCard
+  PRIVATE
+  ${PROJECT_INCLUDE_DIR}
+  ${sqlite_SOURCE_DIR}
+)
+add_test(NAME addEnemyCard
+  COMMAND addEnemyCard
+  WORKING_DIRECTORY ${THIS_HOME_DIR}
+)
+set_property(TEST addEnemyCard
+  PROPERTY PASS_REGULAR_EXPRESSION "${PASS_REGEX}"
+)
+
 add_custom_target(buildTests)
-add_dependencies(buildTests addCard removeCard addPartyMember removePartyMember)
+add_dependencies(buildTests addCard removeCard addPartyMember removePartyMember addEnemyCard)

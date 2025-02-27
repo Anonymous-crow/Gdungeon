@@ -82,12 +82,21 @@ public:
 
 //! The struct to be used in enemy intentions
 struct EnemyCard {
+	EnemyCard(char ** argv) : 
+		name(argv[0]),
+		cardID(argv[1]),
+		damage(std::stoi(argv[2]),
+		token(std::strcmp(argv[3], "1") == 0),
+		tokenType(argv[4]),
+		tokenGain(argv[5]) {};
+
   std::string name;
   std::string cardID;
   int damage;
   bool token;
   std::string tokenType;
   std::string tokenGain;
+  std::list<Effect> EffectList;
 };
 
 //! used by Enemies to attack and is shown to the player ahead of time
@@ -220,11 +229,14 @@ public:
 
 private:
   Card *searchForID(const std::string &) const;
+  EnemyCard* searchForEnemyID(const std::string&) const;
   int searchForCopies(const std::string &) const;
   std::list<std::string> searchForPlayerCards(const std::string &) const;
   std::list<std::string> searchForAllCards() const;
+  EnemyCard *createEnemyCard(const std::string&);
   Card *createCard(const std::string &);
   std::map<std::string, Card *> cardMap;
+  std::map<std::string, EnemyCard*> enemyCardMap;
   void openDB();
   void closeDB();
   sqlite3 *db;

@@ -40,12 +40,28 @@ int Catalog::getCopiesByID(const std::string& cardID) {
     return resp->copies;
 }
 
+EnemyCard* Catalog::getEnemyCard(const std::string& cardID) {
+	EnemyCard* resp = searchForEnemyID(cardID);
+	if (resp == nullptr) {
+		return createEnemyCard(cardID);
+	}
+	return resp;
+}
+
 Card* Catalog::searchForID(const std::string& cardID) const {
-    std::map<std::string, Card*>::const_iterator 
+    std::map<std::string, Card*>::const_iterator
         it = cardMap.find(cardID);
     if (it != cardMap.cend())
         return it->second;
     return nullptr;
+}
+
+EnemyCard* Catalog::searchForEnemyID(cardID) {
+	std::map<std::string, EnemyCard*>::const_iterator it = enemyCardMap.find(cardID);
+	if (it != enemyCardMap.cend()) {
+		return it->second;
+	}
+	return nullptr;
 }
 
 int intCallBack(void *intPtr, 
@@ -101,13 +117,13 @@ int cardCallback(void *cardPtr,
 int Catalog::searchForCopies(const std::string& cardID) const {
     char* errmsg = nullptr;
     char* sqlQuery = sqlite3_mprintf(
-                    "SELECT copies FROM playerCards WHERE cardID = \"%q\";", 
+                    "SELECT copies FROM playerCards WHERE cardID = \"%q\";",
                     cardID.c_str());
     int copies{0};
-    int rc = sqlite3_exec(db, 
+    int rc = sqlite3_exec(db,
                           sqlQuery,
-                          intCallBack, 
-                          reinterpret_cast<void*>(&copies), 
+                          intCallBack,
+                          reinterpret_cast<void*>(&copies),
                           &errmsg);
 
     sqlite3_free(sqlQuery);
@@ -126,12 +142,12 @@ Card* Catalog::createCard(const std::string& cardID) {
 
     char* errmsg = nullptr;
     char* sqlQuery = sqlite3_mprintf(
-                    "SELECT * FROM playerCards WHERE cardID = \"%q\";", 
+                    "SELECT * FROM playerCards WHERE cardID = \"%q\";",
                     cardID.c_str());
-    int rc = sqlite3_exec(db, 
+    int rc = sqlite3_exec(db,
                           sqlQuery,
-                          cardCallback<Card>, 
-                          reinterpret_cast<void*>(&responseCard), 
+                          cardCallback<Card>,
+                          reinterpret_cast<void*>(&responseCard),
                           &errmsg);
 
     sqlite3_free(sqlQuery);
@@ -152,10 +168,10 @@ Card* Catalog::createCard(const std::string& cardID) {
                     "SELECT * FROM cardEffects WHERE cardID = \"%q\";", 
                     cardID.c_str());
 
-    rc = sqlite3_exec(db, 
+    rc = sqlite3_exec(db,
                       sqlQuery,
-                      effectListCallback, 
-                      reinterpret_cast<void*>(&(responseCard->EffectList)), 
+                      effectListCallback,
+                      reinterpret_cast<void*>(&(responseCard->EffectList)),
                       &errmsg);
 
     sqlite3_free(sqlQuery);
@@ -169,6 +185,56 @@ Card* Catalog::createCard(const std::string& cardID) {
     return responseCard;
 }
 
+EnemyCard* Catalog::createEnemyCards(const std::string& cardID) {
+	EnemyCard* responseCard = nullptr;
+    	char* errmsg = nullptr;
+    	char* sqlQuery = sqlite3_mprintf(
+                    "SELECT * FROM enemyCards WHERE cardID = \"%q\";",
+                    cardID.c_str());
+    	int rc = sqlite3_exec(db,
+                          sqlQuery,
+                          cardCallback<EnemyCard>,
+                          reinterpret_cast<void*>(&responseCard),
+                          &errmsg);
+
+    	sqlite3_free(sqlQuery);
+
+    	if( rc != SQLITE_OK ) {
+    	    fprintf(stderr, "SQL error: %s\n", errmsg);
+    	    throw std::runtime_error(errmsg);
+    	    sqlite3_free(errmsg);
+    	}
+
+    	if (responseCard == nullptr) {
+    	  return nullptr;
+    	}
+
+    	this->enemyCardMap[cardID] = responseCard;
+
+    	sqlQuery = sqlite3_mprintf(
+                    	"SELECT * FROM enemyEffects WHERE cardID = \"%q\";", 
+                    	cardID.c_str());
+
+    	rc = sqlite3_exec(db,
+                      sqlQuery,
+                      effectListCallback,
+                      reinterpret_cast<void*>(&(responseCard->EffectList)),
+                      &errmsg);
+
+    	sqlite3_free(sqlQuery);
+	sqlQuery = nullptr;
+
+    	if( rc != SQLITE_OK ) {
+        	fprintf(stderr, "SQL error: %s\n", errmsg);
+        	throw std::runtime_error(errmsg);
+        	sqlite3_free(errmsg);
+    	}
+
+
+
+	return EnemyCard;
+}
+
 std::list<std::string> Catalog::searchForPlayerCards
             (const std::string& playerID) const {
     char* errmsg = nullptr;
@@ -176,10 +242,10 @@ std::list<std::string> Catalog::searchForPlayerCards
             "SELECT cardID FROM playerCards WHERE cardID LIKE \"%q_%%\";", 
             playerID.c_str());
     std::list<std::string> cardList;
-    int rc = sqlite3_exec(db, 
+    int rc = sqlite3_exec(db,
                           sqlQuery,
-                          stringListCallback, 
-                          reinterpret_cast<void*>(&cardList), 
+                          stringListCallback,
+                          reinterpret_cast<void*>(&cardList),
                           &errmsg);
 
     sqlite3_free(sqlQuery);
@@ -195,10 +261,10 @@ std::list<std::string> Catalog::searchForPlayerCards
 std::list<std::string> Catalog::searchForAllCards() const {
     char* errmsg = nullptr;
     std::list<std::string> cardList;
-    int rc = sqlite3_exec(db, 
+    int rc = sqlite3_exec(db,
                           "SELECT cardID FROM playerCards;",
-                          stringListCallback, 
-                          reinterpret_cast<void*>(&cardList), 
+                          stringListCallback,
+                          reinterpret_cast<void*>(&cardList),
                           &errmsg);
 
     if( rc != SQLITE_OK ) {
