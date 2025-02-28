@@ -7,6 +7,13 @@ on:
       - "rc*"
 
 jobs:
+  echo-things:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: |
+          echo "${{ github.ref }}"
+          echo "$GITHUB_REF"
   build:
     if: contains('refs/heads/main', github.ref)
     runs-on: ${{ matrix.os }}
