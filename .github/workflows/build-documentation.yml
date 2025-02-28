@@ -9,20 +9,10 @@ on:
 
 jobs:
   build-docs:
-    # if: contains('refs/heads/main', github.ref)
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: huh
-        run: |
-          echo "${{ github.ref }} and $GITHUB_REF"
-          echo whuh
-          echo "::set-output name=test::${{ github.ref }}"
-
-      - name: whuh
-        if: contains(steps.huh.outputs.test, 'refs/heads/main')
-        run: echo "should work"
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.

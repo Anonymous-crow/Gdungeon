@@ -22,6 +22,8 @@ int main(int argLen, char** args){
     Cli interface(argLen, args);
     createTheGuys(party);
 
+    Enemy lilguy("Mechanical Monkey", "barbatos_monkey", &cardCatalog, 6, 0, 12);
+
     std::cout << std::endl;
     std::cout << "Hello, from Gdungeon!\n" 
     << party.print() << std::endl;

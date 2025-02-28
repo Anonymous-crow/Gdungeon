@@ -5,6 +5,11 @@
 #include <iostream>
 #include <sstream>
 
+#define MELEE 1
+#define RANGED 2
+#define SUMMONER 4
+#define SUPPORT 8
+
 std::string Entity::getName() const {
     return name;
 }
@@ -162,6 +167,29 @@ Player* const Party::operator[](size_t index) const {
     }
     return partyList[index];
 }
+
+void Enemy::initIntentionDeck() {
+	std::cout << "Range:\n";
+	std::uint8_t mask{1};
+	for (std::uint8_t i{0}; i < 4; ++i) {
+		switch(rangeType & mask) {
+			case MELEE:
+				std::cout << "\tMELEE\n";
+				break;
+			case RANGED:
+				std::cout << "\tRANGED\n";
+				break;
+			case SUMMONER:
+				std::cout << "\tSUMMONER\n";
+				break;
+			case SUPPORT:
+				std::cout << "\tSUPPORT\n";
+				break;
+		}
+		mask <<= 1;
+	}
+}
+
 
 Party::iterator Party::begin() {
     return iterator(&partyList[0]);

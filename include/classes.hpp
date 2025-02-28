@@ -173,10 +173,10 @@ class Player : public Entity {
 * ************************************************/
 class Enemy : public Entity {
     public:
-        Enemy(int newHp,
-              const std::string& newName,
+        Enemy(const std::string& newName,
               const std::string& newID,
               Catalog* newCardCatalogPtr,
+	      int newHp = 0,
 	      std::uint8_t newSize = 0,
 	      std::uint8_t newRange = 1,
 	      const std::string& newA = "",
@@ -186,13 +186,21 @@ class Enemy : public Entity {
 	    size{newSize},
 	    rangeType{newRange},
 	    A(newA),
-	    B(newB) {}
+	    B(newB) { initIntentionDeck(); }
 
+	/// @brief Returns the size of the intent queue
+	/// @return a size_t with the number of upcoming
+	/// moves in the intentQueue.
         size_t getIntentSize() const;
-        void addIntent(Card* newIntent);
+
+	
+        void addIntent(Intention* newIntent);
         void addIntent(const std::string& intentID,
                        int copies = 1);
     private:
+	void initIntentionDeck();
+	EnemyCard* getEnemyCard(const std::string& cardID);
+
         std::uint8_t rangeType;
 	std::uint8_t size;
 	std::string A;
