@@ -175,19 +175,32 @@ class Enemy : public Entity {
     public:
         Enemy(int newHp,
               const std::string& newName,
-              const std::string& newID, 
-              Catalog* newCardCatalogPtr) :
-            Entity(newHp, newName, newID)
-            {}
+              const std::string& newID,
+              Catalog* newCardCatalogPtr,
+	      std::uint8_t newSize = 0,
+	      std::uint8_t newRange = 1,
+	      const std::string& newA = "",
+	      const std::string& newB = "") :
+            Entity(newHp, newName, newID),
+	    cardCatalogPtr(newCardCatalogPtr),
+	    size{newSize},
+	    rangeType{newRange},
+	    A(newA),
+	    B(newB) {}
 
         size_t getIntentSize() const;
         void addIntent(Card* newIntent);
-        void addIntent(const std::string& intentID, 
+        void addIntent(const std::string& intentID,
                        int copies = 1);
     private:
         std::uint8_t rangeType;
+	std::uint8_t size;
+	std::string A;
+	std::string B;
         std::vector<std::string> passives;
+	std::vector<Intention*> intentDeck;
         std::list<Intention*> intentQueue;
+	Catalog* cardCatalogPtr{nullptr};
 };
 
 
@@ -195,9 +208,9 @@ class Enemy : public Entity {
 //! Points to a pointer of the provided class.
 template<class T>
 struct ptrIterator {
-    using iterator_category 
+    using iterator_category
         = std::contiguous_iterator_tag;
-    using difference_type = std::ptrdiff_t; 
+    using difference_type = std::ptrdiff_t;
     using value_type = T*;
     using pointer = T**;
     using reference = T*&;
