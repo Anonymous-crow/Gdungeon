@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -100,7 +100,7 @@ jobs:
             package/Gdungeon-*.*.*
 
   build-docs:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -148,7 +148,7 @@ jobs:
           path: ${{ github.workspace }}/docs/build/html
 
   deploy-docs:
-    if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/main'
     # Add a dependency to the build job
     needs: build-docs
 
