@@ -115,7 +115,7 @@ jobs:
       - name: install sqlite3
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: sqlite3 libsqlite3 libsqlite3-dev
+          packages: sqlite3 libsqlite3 libsqlite3-dev doxygen
           version: 4.0
           # execute_install_scripts: true
       
