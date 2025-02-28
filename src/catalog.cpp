@@ -56,7 +56,7 @@ Card* Catalog::searchForID(const std::string& cardID) const {
     return nullptr;
 }
 
-EnemyCard* Catalog::searchForEnemyID(cardID) {
+EnemyCard* Catalog::searchForEnemyID(const std::string& cardID) const {
 	std::map<std::string, EnemyCard*>::const_iterator it = enemyCardMap.find(cardID);
 	if (it != enemyCardMap.cend()) {
 		return it->second;
@@ -185,7 +185,7 @@ Card* Catalog::createCard(const std::string& cardID) {
     return responseCard;
 }
 
-EnemyCard* Catalog::createEnemyCards(const std::string& cardID) {
+EnemyCard* Catalog::createEnemyCard(const std::string& cardID) {
 	EnemyCard* responseCard = nullptr;
     	char* errmsg = nullptr;
     	char* sqlQuery = sqlite3_mprintf(
@@ -232,7 +232,7 @@ EnemyCard* Catalog::createEnemyCards(const std::string& cardID) {
 
 
 
-	return EnemyCard;
+	return responseCard;
 }
 
 std::list<std::string> Catalog::searchForPlayerCards

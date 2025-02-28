@@ -82,18 +82,25 @@ public:
 
 //! The struct to be used in enemy intentions
 struct EnemyCard {
-	EnemyCard(char ** argv) : 
-		name(argv[0]),
+public:
+	EnemyCard(char** argv) 
+		: name(argv[0]),
 		cardID(argv[1]),
-		damage(std::stoi(argv[2]),
+		damage(std::stoi(argv[2])),
 		token(std::strcmp(argv[3], "1") == 0),
 		tokenType(argv[4]),
-		tokenGain(argv[5]) {};
+		tokenGain(argv[5])
+		{};
+
+	EnemyCard(const char *newName, const char* newCardID, int newDamage, bool newToken, const char* newTokenType, const char* newTokenGain, const std::list<Effect>& newEffectList)
+	: name(newName), cardID(newCardID),
+	damage(newDamage), token(newToken), 
+	tokenType(newTokenType), tokenGain(newTokenGain) {};
 
   std::string name;
   std::string cardID;
-  int damage;
-  bool token;
+  int damage{0};
+  bool token{false};
   std::string tokenType;
   std::string tokenGain;
   std::list<Effect> EffectList;
