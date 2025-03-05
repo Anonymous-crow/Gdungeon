@@ -16,11 +16,8 @@ if(Furo_FOUND)
 else()
   set(SPHINX_HTML_THEME "alabaster")
 endif()
-configure_file(
-  "${CMAKE_CURRENT_SOURCE_DIR}/SPHINX_CONF_IN"
-  "${SPHINX_BIN_DIR}/conf.py"
-  @ONLY
-)
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/SPHINX_CONF_IN"
+               "${SPHINX_BIN_DIR}/conf.py" @ONLY)
 set(DOCS_DEPENDS "${SPHINX_BIN_DIR}/conf.py")
 option(SPHINX_DIRHTML "Use the Sphinx dirhtml Option" ON)
 if(SPHINX_DIRHTML)
@@ -31,35 +28,31 @@ endif()
 add_custom_command(
   OUTPUT "${SPHINX_BUILD_DIR}/html/index.html"
   COMMAND "${Sphinx_EXECUTABLE}" -b "${_ISDIRHTML}" -c "${SPHINX_BIN_DIR}"
-    "${SPHINX_SOURCE_DIR}" "${SPHINX_BUILD_DIR}/html"
-  COMMENT "Building Sphinx HTML"
-)
+          "${SPHINX_SOURCE_DIR}" "${SPHINX_BUILD_DIR}/html"
+  COMMENT "Building Sphinx HTML")
 list(APPEND DOCS_DEPENDS "${SPHINX_BUILD_DIR}/html/index.html")
 
 string(TOLOWER ${PROJECT_NAME} PROJECT_NAME_LOWER)
 
 add_custom_command(
   OUTPUT "${SPHINX_BUILD_DIR}/latex/${PROJECT_NAME_LOWER}.tex"
-  COMMAND "${Sphinx_EXECUTABLE}" -b latex --conf-dir
-    "${SPHINX_BIN_DIR}" "${SPHINX_SOURCE_DIR}" "${SPHINX_BUILD_DIR}/latex"
-  COMMENT "Building Sphinx LaTeX"
-)
+  COMMAND "${Sphinx_EXECUTABLE}" -b latex --conf-dir "${SPHINX_BIN_DIR}"
+          "${SPHINX_SOURCE_DIR}" "${SPHINX_BUILD_DIR}/latex"
+  COMMENT "Building Sphinx LaTeX")
 
 add_custom_command(
   OUTPUT "${SPHINX_BUILD_DIR}/latex/${PROJECT_NAME_LOWER}.pdf"
   WORKING_DIRECTORY "${SPHINX_BUILD_DIR}/latex"
   COMMAND make
   DEPENDS "${SPHINX_BUILD_DIR}/latex/${PROJECT_NAME_LOWER}.tex"
-  COMMENT "Building Sphinx PDF"
-)
+  COMMENT "Building Sphinx PDF")
 
 if(SPHINX_PDF)
   list(APPEND DOCS_DEPENDS
-    "${SPHINX_BUILD_DIR}/latex/${PROJECT_NAME_LOWER}.pdf"
-  )
+       "${SPHINX_BUILD_DIR}/latex/${PROJECT_NAME_LOWER}.pdf")
 endif()
-add_custom_target(docs ALL
+add_custom_target(
+  docs ALL
   DEPENDS ${DOCS_DEPENDS}
-  COMMENT "Build Sphinx Documentation"
-)
+  COMMENT "Build Sphinx Documentation")
 add_dependencies(docs doxygen_docs)

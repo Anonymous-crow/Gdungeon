@@ -2,12 +2,12 @@
 #include <classes.hpp>
 #include <iostream>
 
-int main (int argc, char** argv) {
+int main(int argc, char** argv) {
 
 	bool test1{false}, test2{false};
 
 	Catalog catalog;
-	
+
 	EnemyCard* bash = catalog.getEnemyCard("barbatos_bash");
 	if (bash != nullptr && (bash->name == "Cymbal Bash")) {
 		test1 = true;

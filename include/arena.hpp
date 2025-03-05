@@ -14,15 +14,16 @@ struct Card;
 struct Effect;
 
 class Arena {
-    public:
-        Arena(Party* newParty) : playerParty(newParty) {}
-        inline void setOpps(EnemyParty*);
-        inline EnemyParty* getOppParty();
-        inline void queueOpps (EnemyParty*);
-    private:
-        std::queue<EnemyParty*> partyQueue;
-        Party* playerParty{nullptr};
-        EnemyParty* oppParty{nullptr};
+      public:
+	Arena(Party* newParty) : playerParty(newParty) {}
+	inline void setOpps(EnemyParty*);
+	inline EnemyParty* getOppParty();
+	inline void queueOpps(EnemyParty*);
+
+      private:
+	std::queue<EnemyParty*> partyQueue;
+	Party* playerParty{nullptr};
+	EnemyParty* oppParty{nullptr};
 };
 
 #endif
